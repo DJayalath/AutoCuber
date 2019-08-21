@@ -6,6 +6,9 @@
 # VM
 __vm
 
+# FreeCAD
+*.FCStd1
+
 # User-specific files
 *.rsuser
 *.suo
