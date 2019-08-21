@@ -3,6 +3,8 @@ const int dirPin = 4;
 const int stepPin = 3;
 const int stepsPerRevolution = 200;
 
+int steps = 0;
+
 void setup()
 {
 	// Declare pins as Outputs
@@ -18,9 +20,13 @@ void loop()
 	for (int x = 0; x < stepsPerRevolution; x++)
 	{
 		digitalWrite(stepPin, HIGH);
-		delayMicroseconds(2000);
+		delayMicroseconds(1000);
 		digitalWrite(stepPin, LOW);
-		delayMicroseconds(2000);
+		delayMicroseconds(1000);
+		steps++;
+		if (steps >= 200) {
+			steps = 0;
+		}
 	}
 	delay(1000); // Wait a second
 
@@ -34,6 +40,10 @@ void loop()
 		delayMicroseconds(1000);
 		digitalWrite(stepPin, LOW);
 		delayMicroseconds(1000);
+		steps--;
+		if (steps <= -1) {
+			steps = 199;
+		}
 	}
 	delay(1000); // Wait a second
 }
