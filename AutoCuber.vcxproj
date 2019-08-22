@@ -129,7 +129,11 @@
     <None Include="AutoCuber.ino" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MotorDriver.h" />
     <ClInclude Include="__vm\.AutoCuber.vsarduino.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MotorDriver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
