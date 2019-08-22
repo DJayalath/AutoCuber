@@ -24,9 +24,15 @@
     <ClInclude Include="MotorDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RotaryEncoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotorDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RotaryEncoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
