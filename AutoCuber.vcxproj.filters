@@ -27,12 +27,18 @@
     <ClInclude Include="RotaryEncoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CubeRotate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotorDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RotaryEncoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeRotate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
