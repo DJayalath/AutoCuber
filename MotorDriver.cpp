@@ -24,3 +24,13 @@ void MotorDriver::Turn(Direction dir, int angle, int pulse_delay)
 		delayMicroseconds(pulse_delay);
 	}
 }
+
+int MotorDriver::GetStepPin()
+{
+	return this->stepPin;
+}
+
+int MotorDriver::GetDirPin()
+{
+	return this->dirPin;
+}

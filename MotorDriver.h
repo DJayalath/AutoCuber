@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
-enum Direction {
-	CW = HIGH,
-	ACW = LOW,
-};
+#include "Direction.h"
 
 class MotorDriver
 {
@@ -14,6 +10,9 @@ public:
 
 	// Turn motor in dir by angle (degrees) with pulse delay (micro-seconds)
 	void Turn(Direction dir, int angle, int pulse_delay);
+
+	int GetStepPin();
+	int GetDirPin();
 
 private:
 	const int stepPin;
