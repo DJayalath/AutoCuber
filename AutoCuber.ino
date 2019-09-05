@@ -27,9 +27,6 @@ void loop()
 	//}
 
 	M2.Turn(Direction::ACW, 360, 1000);
-	delay(1000);
-	M1.Turn(Direction::ACW, 50 * 32, 600);
-	delay(2000);
-	M1.Turn(Direction::CW, 50 * 32, 600);
-	delay(2000);
+	M1.Turn(Direction::ACW, 50 * 8, 1000);
+	M1.Turn(Direction::CW, 50 * 8, 1000);
 }
