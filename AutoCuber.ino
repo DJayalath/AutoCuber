@@ -6,6 +6,9 @@ MotorDriver M2 = MotorDriver(4, 5);
 MotorDriver M3 = MotorDriver(6, 7);
 MotorDriver M4 = MotorDriver(8, 9);
 MotorDriver M5 = MotorDriver(10, 11);
+MotorDriver M6 = MotorDriver(12, 13);
+MotorDriver M7 = MotorDriver(22, 23);
+MotorDriver M8 = MotorDriver(24, 25);
 //MotorDriver M3 = MotorDriver(10, 11);
 //MotorDriver M4 = MotorDriver(12, 13);
 //MotorDriver M5 = MotorDriver(23, 22);
@@ -77,4 +80,17 @@ void loop()
 	delay(500);
 	M5.Turn(Direction::CW, 720, 1000);
 	delay(500);
+	M6.Turn(Direction::ACW, 50 * 12, 1000);
+	delay(100);
+	M6.Turn(Direction::CW, 50 * 12, 1000);
+	delay(100);
+
+	M7.Turn(Direction::ACW, 360, 1000);
+	delay(500);
+	M7.Turn(Direction::CW, 720, 1000);
+	delay(500);
+	M8.Turn(Direction::ACW, 50 * 8, 1000);
+	delay(100);
+	M8.Turn(Direction::CW, 50 * 8, 1000);
+	delay(100);
 }
