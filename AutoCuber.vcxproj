@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,7 +150,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties config.Debug.customdebug_mega_atmega2560_debugger_type="none" arduino.upload.port="COM4" />
+      <UserProperties config.Debug.customdebug_mega_atmega2560_debugger_type="none" arduino.upload.port="COM5" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
