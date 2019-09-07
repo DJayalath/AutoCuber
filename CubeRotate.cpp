@@ -12,18 +12,19 @@ CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver 
 
 void CubeRotate::ShowAll()
 {
-	MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// Extend FB
-	MLFB.Extend();
-	// Retract LR
 	MLLR.Retract();
+	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	//// Extend FB
+	//MLFB.Extend();
+	//// Retract LR
+	//MLLR.Retract();
 	delay(500); // CAPTURE
 	MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
 	MLR.Turn(Direction::CW, 90, 600); // LR horizontal
 	// Extend LR
 	MLLR.Extend();
 	// Retract FB
-	MLFB.Extend();
+	MLFB.Retract();
 	delay(500); // CAPTURE
 	MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
 	MFB.Turn(Direction::CW, 90, 600); // FB horizontal
@@ -37,7 +38,7 @@ void CubeRotate::ShowAll()
 	// Extend LR
 	MLLR.Extend();
 	// Retract FB
-	MLFB.Extend();
+	MLFB.Retract();
 	delay(500); // CAPTURE
 	MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
 	MFB.Turn(Direction::CW, 90, 600); // FB horizontal
@@ -51,8 +52,10 @@ void CubeRotate::ShowAll()
 	// Extend LR
 	MLLR.Extend();
 	// Retract FB
-	MLFB.Extend();
+	MLFB.Retract();
 	delay(500); // CAPTURE
+	MFB.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
 }
 
 void CubeRotate::Retract(MotorDriver& M)

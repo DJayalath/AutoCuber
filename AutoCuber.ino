@@ -1,5 +1,6 @@
 ﻿#include "MotorDriver.h"
 #include "RotaryEncoder.h"
+#include "CubeRotate.h"
 
 MotorDriver M1 = MotorDriver(2, 3);
 MotorDriver M2 = MotorDriver(4, 5);
@@ -14,10 +15,12 @@ MotorDriver M8 = MotorDriver(24, 25);
 //MotorDriver M5 = MotorDriver(23, 22);
 //MotorDriver M6 = MotorDriver(24, 25);
 //RotaryEncoder R = RotaryEncoder(7, 6, 5);
+CubeRotate CR = CubeRotate(M2, M1, M4, M3, M6, M5, M8, M7);
 int speed = 1000;
 
 void setup()
 {
+	CR.ShowAll();
 }
 
 void loop()
@@ -56,6 +59,11 @@ void loop()
 	////delay(100);
 	//M6.Turn(Direction::CW, 50 * 8, 1000);
 	//delay(100);
+
+	//M4.Turn(Direction::ACW, 50 * 8, 1000);
+	//delay(5000);
+	//M4.Turn(Direction::CW, 50 * 8, 1000);
+	//delay(5000);
 	
 
 	M1.Turn(Direction::ACW, 360, 1000);
@@ -80,9 +88,9 @@ void loop()
 	delay(500);
 	M5.Turn(Direction::CW, 720, 1000);
 	delay(500);
-	M6.Turn(Direction::ACW, 50 * 12, 1000);
+	M6.Turn(Direction::ACW, 50 * 8, 1000);
 	delay(100);
-	M6.Turn(Direction::CW, 50 * 12, 1000);
+	M6.Turn(Direction::CW, 60 * 8, 1000);
 	delay(100);
 
 	M7.Turn(Direction::ACW, 360, 1000);
