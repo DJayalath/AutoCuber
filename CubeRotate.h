@@ -3,7 +3,7 @@
 #include "DualMotorDriver.h"
 
 // DEFAULT MOTOR STATE: Vertical
-// DEFAULT LAYOUT STATE: Front and Back retracted, Left and Right extended
+// DEFAULT LAYOUT STATE: All extended
 
 /*
 Motor Definitions:
@@ -24,6 +24,13 @@ public:
 
 	// Rotate cube to show all sides for camera above
 	void ShowAll();
+	void Scramble();
+	//void R(int count, bool n = false);
+	//void L(int count, bool n = false);
+	//void U(int count, bool n = false);
+	//void D(int count, bool n = false);
+	//void B(int count, bool n = false);
+	//void Fr(int count, bool n = false);
 private:
 	void Retract(MotorDriver& M);
 	void Extend(MotorDriver& M);

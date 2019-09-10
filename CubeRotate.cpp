@@ -1,4 +1,5 @@
 #include "CubeRotate.h"
+#include "Arduino.h"
 CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver D, MotorDriver E, MotorDriver F, MotorDriver G, MotorDriver H) :
 					   M1(A), M2(B), M3(C), M4(D),
 					   M5(E), M6(F), M7(G), M8(H), 
@@ -12,50 +13,267 @@ CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver 
 
 void CubeRotate::ShowAll()
 {
+	this->Retract(M1);
+	M2.Turn(Direction::CW, 90, 600);
+	this->Extend(M1);
 	MLLR.Retract();
+	MFB.Turn(Direction::CW, 90, 600);
+
+	delay(1000);
+
+	MLLR.Extend();
+	this->Retract(M5);
+	M6.Turn(Direction::CW, 90, 600);
+	this->Extend(M5);
+
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
+	MLFB.Retract();
+	MLR.Turn(Direction::CW, 90, 600);
+
+	delay(1000);
+
+	// Return to normal
+	MLFB.Extend();
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+
+
+
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	MFB.Turn(Direction::CW, 90, 1000);
+	//	delay(1000);
+	//}
+	//MLLR.Retract();
+
+
+
+	//MLFB.Retract();
 	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
 	//// Extend FB
 	//MLFB.Extend();
 	//// Retract LR
 	//MLLR.Retract();
-	delay(500); // CAPTURE
-	MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// Extend LR
-	MLLR.Extend();
-	// Retract FB
+	//delay(1000); // CAPTURE
+	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	//// Extend LR
+	//MLLR.Extend();
+	//// Retract FB
+	//MLFB.Retract();
+	//delay(1000); // CAPTURE
+	//MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
+	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	//// Extend FB
+	//MLFB.Extend();
+	//// Retract LR
+	//MLLR.Retract();
+	//delay(1000); // CAPTURE
+	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	//// Extend LR
+	//MLLR.Extend();
+	//// Retract FB
+	//MLFB.Retract();
+	//delay(1000); // CAPTURE
+	//MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
+	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	//// Extend FB
+	//MLFB.Extend();
+	//// Retract LR
+	//MLLR.Retract();
+	//delay(1000); // CAPTURE
+	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	//// Extend LR
+	//MLLR.Extend();
+	//// Retract FB
+	//MLFB.Retract();
+	//delay(1000); // CAPTURE
+	////MFB.Turn(Direction::CW, 90, 600);
+	//MLFB.Extend();
+}
+
+void CubeRotate::Scramble()
+{
+	randomSeed(analogRead(0));
+
+	int side[6];
+	for (int i = 0; i < 6; i++) {
+		side[i] = random(4);
+	}
+
+	M2.Turn(Direction::CW, 90 * side[0], 600);
+	if (side[0] % 2 != 0) {
+		this->Retract(M1);
+		M2.Turn(Direction::CW, 90, 600);
+		this->Extend(M1);
+	}
+
+	M4.Turn(Direction::CW, 90 * side[1], 600);
+	if (side[1] % 2 != 0) {
+		this->Retract(M3);
+		M4.Turn(Direction::CW, 90, 600);
+		this->Extend(M3);
+	}
+
+	M6.Turn(Direction::CW, 90 * side[2], 600);
+	if (side[2] % 2 != 0) {
+		this->Retract(M5);
+		M6.Turn(Direction::CW, 90, 600);
+		this->Extend(M5);
+	}
+
+	M8.Turn(Direction::CW, 90 * side[3], 600);
+	if (side[3] % 2 != 0) {
+		this->Retract(M7);
+		M8.Turn(Direction::CW, 90, 600);
+		this->Extend(M7);
+	}
+
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
 	MLFB.Retract();
-	delay(500); // CAPTURE
-	MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// Extend FB
+	MLR.Turn(Direction::CW, 90, 600);
 	MLFB.Extend();
-	// Retract LR
-	MLLR.Retract();
-	delay(500); // CAPTURE
-	MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// Extend LR
-	MLLR.Extend();
-	// Retract FB
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+
+	M2.Turn(Direction::CW, 90 * side[4], 600);
+	if (side[4] % 2 != 0) {
+		this->Retract(M1);
+		M2.Turn(Direction::CW, 90, 600);
+		this->Extend(M1);
+	}
+
+	M6.Turn(Direction::CW, 90 * side[5], 600);
+	if (side[5] % 2 != 0) {
+		this->Retract(M5);
+		M6.Turn(Direction::CW, 90, 600);
+		this->Extend(M5);
+	}
+
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
 	MLFB.Retract();
-	delay(500); // CAPTURE
-	MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// Extend FB
+	MLR.Turn(Direction::ACW, 90, 600);
 	MLFB.Extend();
-	// Retract LR
-	MLLR.Retract();
-	delay(500); // CAPTURE
-	MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// Extend LR
-	MLLR.Extend();
-	// Retract FB
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+
+}
+
+void CubeRotate::R(int count, bool n)
+{
+	M8.Turn((Direction) n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M7);
+		M8.Turn(Direction::CW, 90, 600);
+		this->Extend(M7);
+	}
+}
+
+void CubeRotate::L(int count, bool n)
+{
+	M4.Turn((Direction)n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M3);
+		M4.Turn(Direction::CW, 90, 600);
+		this->Extend(M3);
+	}
+}
+
+void CubeRotate::B(int count, bool n)
+{
+	M6.Turn((Direction)n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M5);
+		M6.Turn(Direction::CW, 90, 600);
+		this->Extend(M5);
+	}
+}
+
+void CubeRotate::Fr(int count, bool n)
+{
+	M2.Turn((Direction)n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M1);
+		M2.Turn(Direction::CW, 90, 600);
+		this->Extend(M1);
+	}
+}
+
+void CubeRotate::U(int count, bool n)
+{
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
 	MLFB.Retract();
-	delay(500); // CAPTURE
-	MFB.Turn(Direction::CW, 90, 600);
+	MLR.Turn(Direction::ACW, 90, 600);
 	MLFB.Extend();
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+
+	M2.Turn((Direction)n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M1);
+		M2.Turn(Direction::CW, 90, 600);
+		this->Extend(M1);
+	}
+
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
+	MLFB.Retract();
+	MLR.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+}
+
+void CubeRotate::D(int count, bool n)
+{
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
+	MLFB.Retract();
+	MLR.Turn(Direction::ACW, 90, 600);
+	MLFB.Extend();
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
+
+	M6.Turn((Direction)n, 90 * count, 600);
+
+	if (count % 2 != 0) {
+		this->Retract(M5);
+		M6.Turn(Direction::CW, 90, 600);
+		this->Extend(M5);
+	}
+
+	this->Retract(M3);
+	M4.Turn(Direction::CW, 90, 600);
+	this->Extend(M3);
+	MLFB.Retract();
+	MLR.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
+	this->Retract(M7);
+	M8.Turn(Direction::CW, 90, 600);
+	this->Extend(M7);
 }
 
 void CubeRotate::Retract(MotorDriver& M)

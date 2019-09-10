@@ -20,7 +20,19 @@ int speed = 1000;
 
 void setup()
 {
-	CR.ShowAll();
+	//CR.ShowAll();
+	//CR.Scramble();
+	CR.R(1, false);
+	delay(1000);
+	CR.L(1, false);
+	delay(1000);
+	CR.B(1, false);
+	delay(1000);
+	CR.Fr(1, false);
+	delay(1000);
+	CR.U(1, false);
+	delay(1000);
+	CR.D(1, false);
 }
 
 void loop()
@@ -66,39 +78,39 @@ void loop()
 	//delay(5000);
 	
 
-	M1.Turn(Direction::ACW, 360, 1000);
-	delay(500);
-	M1.Turn(Direction::CW, 720, 1000);
-	delay(500);
-	M2.Turn(Direction::ACW, 50 * 8, 1000);
-	delay(100);
-	M2.Turn(Direction::CW, 50 * 8, 1000);
-	delay(100);
+	//M1.Turn(Direction::ACW, 360, 1000);
+	//delay(500);
+	//M1.Turn(Direction::CW, 720, 1000);
+	//delay(500);
+	//M2.Turn(Direction::CW, 120 * 8, 1000);
+	//delay(100);
+	//M2.Turn(Direction::ACW, 120 * 8, 1000);
+	//delay(100);
 
-	M3.Turn(Direction::ACW, 360, 1000);
-	delay(500);
-	M3.Turn(Direction::CW, 720, 1000);
-	delay(500);
-	M4.Turn(Direction::ACW, 50 * 8, 1000);
-	delay(100);
-	M4.Turn(Direction::CW, 50 * 8, 1000);
-	delay(100);
+	//M3.Turn(Direction::ACW, 360, 1000);
+	//delay(500);
+	//M3.Turn(Direction::CW, 720, 1000);
+	//delay(500);
+	//M4.Turn(Direction::ACW, 50 * 8, 1000);
+	//delay(100);
+	//M4.Turn(Direction::CW, 50 * 8, 1000);
+	//delay(100);
 
-	M5.Turn(Direction::ACW, 360, 1000);
-	delay(500);
-	M5.Turn(Direction::CW, 720, 1000);
-	delay(500);
-	M6.Turn(Direction::ACW, 50 * 8, 1000);
-	delay(100);
-	M6.Turn(Direction::CW, 60 * 8, 1000);
-	delay(100);
+	//M5.Turn(Direction::ACW, 360, 1000);
+	//delay(500);
+	//M5.Turn(Direction::CW, 720, 1000);
+	//delay(500);
+	//M6.Turn(Direction::ACW, 50 * 8, 1000);
+	//delay(100);
+	//M6.Turn(Direction::CW, 60 * 8, 1000);
+	//delay(100);
 
-	M7.Turn(Direction::ACW, 360, 1000);
-	delay(500);
-	M7.Turn(Direction::CW, 720, 1000);
-	delay(500);
-	M8.Turn(Direction::ACW, 50 * 8, 1000);
-	delay(100);
-	M8.Turn(Direction::CW, 50 * 8, 1000);
-	delay(100);
+	//M7.Turn(Direction::ACW, 360, 1000);
+	//delay(500);
+	//M7.Turn(Direction::CW, 720, 1000);
+	//delay(500);
+	//M8.Turn(Direction::ACW, 50 * 8, 1000);
+	//delay(100);
+	//M8.Turn(Direction::CW, 50 * 8, 1000);
+	//delay(100);
 }
