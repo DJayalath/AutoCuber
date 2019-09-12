@@ -37,10 +37,10 @@ void DualMotorDriver::Turn(Direction dir, int angle, int pulse_delay, bool lin=f
 
 void DualMotorDriver::Retract()
 {
-	this->Turn(Direction::ACW, 50 * 8, 1000, true);
+	this->Turn(Direction::ACW, 90 * 8, 1000, true);
 }
 
 void DualMotorDriver::Extend()
 {
-	this->Turn(Direction::CW, 50 * 8, 1000, true);
+	this->Turn(Direction::CW, 90 * 8, 1000, true);
 }

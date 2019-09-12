@@ -278,12 +278,18 @@ void CubeRotate::D(int count, bool n)
 
 void CubeRotate::Retract(MotorDriver& M)
 {
-	M.Turn(Direction::ACW, 50 * 8, 1000);
+	M.Turn(Direction::ACW, 90 * 8, 1000);
 }
 
 void CubeRotate::Extend(MotorDriver& M)
 {
-	M.Turn(Direction::CW, 50 * 8, 1000);
+	M.Turn(Direction::CW, 90 * 8, 1000);
+}
+
+void CubeRotate::Correct()
+{
+	MLFB.Turn(Direction::CW, 2 * 8, 1000, true);
+	MLLR.Turn(Direction::CW, 2 * 8, 1000, true);
 }
 
 void CubeRotate::RACW(MotorDriver& M)
