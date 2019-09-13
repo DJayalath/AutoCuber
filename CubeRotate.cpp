@@ -11,34 +11,115 @@ CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver 
 
 }
 
-void CubeRotate::ShowAll()
+void CubeRotate::ShowNext(int face)
 {
-	this->Retract(M1);
-	M2.Turn(Direction::CW, 90, 600);
-	this->Extend(M1);
-	MLLR.Retract();
-	MFB.Turn(Direction::CW, 90, 600);
 
-	delay(1000);
+	switch (face) {
+		// U to R
+		case 1:
+			this->Retract(M3);
+			M4.Turn(Direction::CW, 90, 600);
+			this->Extend(M3);
+			MLFB.Retract();
+			MLR.Turn(Direction::CW, 90, 1000); // Check if CW or ACW - Put F on top
 
-	MLLR.Extend();
-	this->Retract(M5);
-	M6.Turn(Direction::CW, 90, 600);
-	this->Extend(M5);
+			MLFB.Extend();
+			this->Retract(M7);
+			M8.Turn(Direction::CW, 90, 600);
+			this->Extend(M7);
 
-	this->Retract(M3);
-	M4.Turn(Direction::CW, 90, 600);
-	this->Extend(M3);
-	MLFB.Retract();
-	MLR.Turn(Direction::CW, 90, 600);
+			this->Retract(M1);
+			M2.Turn(Direction::CW, 90, 600);
+			this->Extend(M1);
+			MLLR.Retract();
 
-	delay(1000);
+			MFB.Turn(Direction::CW, 90, 1000); // R on top
+			break;
+		case 2:
+			MFB.Turn(Direction::ACW, 90, 1000); // F on top
+			break;
+		case 3:
+			MLLR.Extend();
 
-	// Return to normal
-	MLFB.Extend();
-	this->Retract(M7);
-	M8.Turn(Direction::CW, 90, 600);
-	this->Extend(M7);
+			this->Retract(M1);
+			M2.Turn(Direction::CW, 90, 600);
+			this->Extend(M1);
+
+			this->Retract(M3);
+			M4.Turn(Direction::CW, 90, 600);
+			this->Extend(M3);
+			MLFB.Retract();
+
+			MLR.Turn(Direction::CW, 90, 1000); // D on top
+			break;
+		case 4:
+			MLR.Turn(Direction::ACW, 90, 1000); // Put F back on top
+
+			MLFB.Extend();
+
+			this->Retract(M3);
+			M4.Turn(Direction::CW, 90, 600);
+			this->Extend(M3);
+
+			this->Retract(M1);
+			M2.Turn(Direction::CW, 90, 600);
+			this->Extend(M1);
+
+			MLLR.Retract();
+
+			MFB.Turn(Direction::ACW, 90, 1000); // Put L on top
+			break;
+		case 5:
+			MFB.Turn(Direction::CW, 270, 1000); // Put B on top
+			break;
+		case 6: // Reset case (bring front to position and reset motor states)
+			MFB.Turn(Direction::ACW, 180, 1000); // F on top
+			MLLR.Extend();
+			this->Retract(M1);
+			M2.Turn(Direction::CW, 90, 600);
+			this->Extend(M1);
+
+			this->Retract(M3);
+			M4.Turn(Direction::CW, 90, 600);
+			this->Extend(M3);
+			MLFB.Retract();
+
+			MLR.Turn(Direction::ACW, 90, 1000); // Put U on top
+			
+			MLFB.Extend();
+			this->Retract(M7);
+			M8.Turn(Direction::CW, 90, 600);
+			this->Extend(M7);
+
+			break;
+	}
+
+	// this->Retract(M1);
+	// M2.Turn(Direction::CW, 90, 600);
+	// this->Extend(M1);
+	// MLLR.Retract();
+	// MFB.Turn(Direction::CW, 90, 600);
+
+	// delay(1000);
+
+	// MLLR.Extend();
+	// this->Retract(M5);
+	// M6.Turn(Direction::CW, 90, 600);
+	// this->Extend(M5);
+
+	// this->Retract(M3);
+	// M4.Turn(Direction::CW, 90, 600);
+	// this->Extend(M3);
+	// MLFB.Retract();
+	// MLR.Turn(Direction::CW, 90, 600);
+
+	// delay(1000);
+
+	// // Return to normal
+	// MLFB.Extend();
+	// this->Retract(M7);
+	// M8.Turn(Direction::CW, 90, 600);
+	// this->Extend(M7);
 
 
 
@@ -51,50 +132,59 @@ void CubeRotate::ShowAll()
 
 
 
-	//MLFB.Retract();
-	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	//// Extend FB
-	//MLFB.Extend();
-	//// Retract LR
-	//MLLR.Retract();
-	//delay(1000); // CAPTURE
-	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	//// Extend LR
-	//MLLR.Extend();
-	//// Retract FB
-	//MLFB.Retract();
-	//delay(1000); // CAPTURE
-	//MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	//// Extend FB
-	//MLFB.Extend();
-	//// Retract LR
-	//MLLR.Retract();
-	//delay(1000); // CAPTURE
-	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	//// Extend LR
-	//MLLR.Extend();
-	//// Retract FB
-	//MLFB.Retract();
-	//delay(1000); // CAPTURE
-	//MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	//MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	//// Extend FB
-	//MLFB.Extend();
-	//// Retract LR
-	//MLLR.Retract();
-	//delay(1000); // CAPTURE
-	//MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	//MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	//// Extend LR
-	//MLLR.Extend();
-	//// Retract FB
-	//MLFB.Retract();
-	//delay(1000); // CAPTURE
-	////MFB.Turn(Direction::CW, 90, 600);
-	//MLFB.Extend();
+	// MLFB.Retract();
+	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	// // Extend FB
+	// MLFB.Extend();
+	// MLFB.Turn(Direction::CW, 2 * 8, true);
+	// // Retract LR
+	// MLLR.Retract();
+	// delay(1000); // CAPTURE U
+	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	// // Extend LR
+	// MLLR.Extend();
+	// MLLR.Turn(Direction::CW, 2 * 8, true);
+	// // Retract FB
+	// MLFB.Retract();
+	// delay(1000); // CAPTURE L
+	// MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
+	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	// // Extend FB
+	// MLFB.Extend();
+	// MLFB.Turn(Direction::CW, 2 * 8, true);
+	// // Retract LR
+	// MLLR.Retract();
+	// delay(1000); // CAPTURE
+	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	// // Extend LR
+	// MLLR.Extend();
+	// MLLR.Turn(Direction::CW, 2 * 8, true);
+	// // Retract FB
+	// MLFB.Retract();
+	// delay(1000); // CAPTURE
+	// MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
+	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
+	// // Extend FB
+	// MLFB.Extend();
+	// MLFB.Turn(Direction::CW, 2 * 8, true);
+	// // Retract LR
+	// MLLR.Retract();
+	// delay(1000); // CAPTURE
+	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
+	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
+	// // Extend LR
+	// MLLR.Extend();
+	// MLLR.Turn(Direction::CW, 2 * 8, true);
+	// // Retract FB
+	// MLFB.Retract();
+	// delay(1000); // CAPTURE
+	// //MFB.Turn(Direction::CW, 90, 600);
+	// MLFB.Extend();
+	// MLLR.Retract();
+	// MLR.Turn(Direction::CW, 90, 600);
+	// MLLR.Extend();
 }
 
 void CubeRotate::Scramble()
@@ -283,13 +373,13 @@ void CubeRotate::Retract(MotorDriver& M)
 
 void CubeRotate::Extend(MotorDriver& M)
 {
-	M.Turn(Direction::CW, 90 * 8, 1000);
+	M.Turn(Direction::CW, 90 * 8 + 4, 1000);
 }
 
 void CubeRotate::Correct()
 {
-	MLFB.Turn(Direction::CW, 2 * 8, 1000, true);
-	MLLR.Turn(Direction::CW, 2 * 8, 1000, true);
+	MLFB.Turn(Direction::CW, 1 * 8, 1000, true);
+	MLLR.Turn(Direction::CW, 1 * 8, 1000, true);
 }
 
 void CubeRotate::RACW(MotorDriver& M)

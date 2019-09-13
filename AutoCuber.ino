@@ -1,7 +1,6 @@
-﻿#include "MotorDriver.h"
-#include "RotaryEncoder.h"
+#include "MotorDriver.h"
 #include "CubeRotate.h"
-
+// #include "RotaryEncoder.h"
 MotorDriver M1 = MotorDriver(2, 3);
 MotorDriver M2 = MotorDriver(4, 5);
 MotorDriver M3 = MotorDriver(6, 7);
@@ -10,18 +9,16 @@ MotorDriver M5 = MotorDriver(10, 11);
 MotorDriver M6 = MotorDriver(12, 13);
 MotorDriver M7 = MotorDriver(22, 23);
 MotorDriver M8 = MotorDriver(24, 25);
-//MotorDriver M3 = MotorDriver(10, 11);
-//MotorDriver M4 = MotorDriver(12, 13);
-//MotorDriver M5 = MotorDriver(23, 22);
-//MotorDriver M6 = MotorDriver(24, 25);
 //RotaryEncoder R = RotaryEncoder(7, 6, 5);
 CubeRotate CR = CubeRotate(M2, M1, M4, M3, M6, M5, M8, M7);
 int speed = 1000;
 int counter = 0;
 int msg = 1;
+int face = 1;
 void setup()
 {
 	Serial.begin(9600);
+	// CR.ShowAll();
 
 	//CR.ShowAll();
 	//CR.Scramble();
@@ -45,7 +42,8 @@ void loop() {
 	int rc = Serial.read();
 	switch (rc) {
 	case 'A':
-		CR.ShowAll();
+		CR.ShowNext(face);
+		face += 1;
 		break;
 	case 'Z':
 		CR.Scramble();
@@ -99,12 +97,16 @@ void loop() {
 		counter += 1;
 		break;
 	}
-	Serial.write(rc + 33);
+	if (rc != -1) {
+		Serial.write(35);
+	}
 	Serial.flush();
 	delay(100);
-	if (counter % 2 == 0 && counter != 0) {
-		//CR.Correct();
-	}
+	// if (counter % 2 == 0 && counter != 0) {
+	// 	CR.Correct();
+	// }
+
+
 	//char inByte = ' ';
 	//if (Serial.available()) { // only send data back if data has been sent
 	//	char inByte = Serial.read(); // read the incoming data

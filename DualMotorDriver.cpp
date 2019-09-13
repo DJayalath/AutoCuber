@@ -42,5 +42,5 @@ void DualMotorDriver::Retract()
 
 void DualMotorDriver::Extend()
 {
-	this->Turn(Direction::CW, 90 * 8, 1000, true);
+	this->Turn(Direction::CW, 90 * 8 + 4, 1000, true);
 }

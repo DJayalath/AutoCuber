@@ -23,7 +23,7 @@ public:
 	CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver D, MotorDriver E, MotorDriver F, MotorDriver G, MotorDriver H);
 
 	// Rotate cube to show all sides for camera above
-	void ShowAll();
+	void ShowNext(int face);
 	void Scramble();
 	void Correct();
 	void R(int count, bool n = false);
