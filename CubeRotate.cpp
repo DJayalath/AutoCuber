@@ -266,7 +266,7 @@ void CubeRotate::R(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M7);
-		M8.Turn(Direction::CW, 90, 600);
+		M8.Turn(Direction::ACW, 90, 600);
 		this->Extend(M7);
 	}
 }
@@ -277,7 +277,7 @@ void CubeRotate::L(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M3);
-		M4.Turn(Direction::CW, 90, 600);
+		M4.Turn(Direction::ACW, 90, 600);
 		this->Extend(M3);
 	}
 }
@@ -288,7 +288,7 @@ void CubeRotate::B(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M5);
-		M6.Turn(Direction::CW, 90, 600);
+		M6.Turn(Direction::ACW, 90, 600);
 		this->Extend(M5);
 	}
 }
@@ -299,7 +299,7 @@ void CubeRotate::Fr(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M1);
-		M2.Turn(Direction::CW, 90, 600);
+		M2.Turn(Direction::ACW, 90, 600);
 		this->Extend(M1);
 	}
 }
@@ -320,7 +320,7 @@ void CubeRotate::U(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M1);
-		M2.Turn(Direction::CW, 90, 600);
+		M2.Turn(Direction::ACW, 90, 600);
 		this->Extend(M1);
 	}
 
@@ -351,7 +351,7 @@ void CubeRotate::D(int count, bool n)
 
 	if (count % 2 != 0) {
 		this->Retract(M5);
-		M6.Turn(Direction::CW, 90, 600);
+		M6.Turn(Direction::ACW, 90, 600);
 		this->Extend(M5);
 	}
 
@@ -373,7 +373,7 @@ void CubeRotate::Retract(MotorDriver& M)
 
 void CubeRotate::Extend(MotorDriver& M)
 {
-	M.Turn(Direction::CW, 90 * 8 + 4, 1000);
+	M.Turn(Direction::CW, 90 * 8, 1000);
 }
 
 void CubeRotate::Correct()
