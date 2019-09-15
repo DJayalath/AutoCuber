@@ -13,86 +13,177 @@ CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver 
 
 void CubeRotate::ShowNext(int face)
 {
-
-	switch (face) {
-		// U to R
-		case 1:
-			this->Retract(M3);
-			M4.Turn(Direction::CW, 90, 600);
-			this->Extend(M3);
-			MLFB.Retract();
-			MLR.Turn(Direction::CW, 90, 1000); // Check if CW or ACW - Put F on top
-
-			MLFB.Extend();
-			this->Retract(M7);
-			M8.Turn(Direction::CW, 90, 600);
-			this->Extend(M7);
-
-			this->Retract(M1);
-			M2.Turn(Direction::CW, 90, 600);
-			this->Extend(M1);
+	switch(face) {
+		case 1: // Show U
 			MLLR.Retract();
-
-			MFB.Turn(Direction::CW, 90, 1000); // R on top
-			break;
-		case 2:
-			MFB.Turn(Direction::ACW, 90, 1000); // F on top
-			break;
-		case 3:
+			MLR.Turn(Direction::CW, 90, 600);
 			MLLR.Extend();
-
-			this->Retract(M1);
-			M2.Turn(Direction::CW, 90, 600);
-			this->Extend(M1);
-
-			this->Retract(M3);
-			M4.Turn(Direction::CW, 90, 600);
-			this->Extend(M3);
 			MLFB.Retract();
-
-			MLR.Turn(Direction::CW, 90, 1000); // D on top
 			break;
-		case 4:
-			MLR.Turn(Direction::ACW, 90, 1000); // Put F back on top
-
+		case 2: // Show L
+			MLR.Turn(Direction::CW, 90, 1000);
+			MFB.Turn(Direction::CW, 90, 600);
 			MLFB.Extend();
-
-			this->Retract(M3);
-			M4.Turn(Direction::CW, 90, 600);
-			this->Extend(M3);
-
-			this->Retract(M1);
-			M2.Turn(Direction::CW, 90, 600);
-			this->Extend(M1);
-
 			MLLR.Retract();
-
-			MFB.Turn(Direction::ACW, 90, 1000); // Put L on top
-			break;
-		case 5:
-			MFB.Turn(Direction::CW, 270, 1000); // Put B on top
-			break;
-		case 6: // Reset case (bring front to position and reset motor states)
-			MFB.Turn(Direction::ACW, 180, 1000); // F on top
+			MFB.Turn(Direction::ACW, 90, 1000);
 			MLLR.Extend();
-			this->Retract(M1);
-			M2.Turn(Direction::CW, 90, 600);
-			this->Extend(M1);
-
-			this->Retract(M3);
-			M4.Turn(Direction::CW, 90, 600);
-			this->Extend(M3);
 			MLFB.Retract();
-
-			MLR.Turn(Direction::ACW, 90, 1000); // Put U on top
-			
+			MFB.Turn(Direction::CW, 90, 600);
 			MLFB.Extend();
-			this->Retract(M7);
-			M8.Turn(Direction::CW, 90, 600);
-			this->Extend(M7);
+			MLLR.Retract();
+			break;
+		case 3: // Show F
+			MFB.Turn(Direction::CW, 90, 1000);
+			MLLR.Extend();
+			MLFB.Retract();
+			MFB.Turn(Direction::CW, 90, 600);
+			MLFB.Extend();
+			MLLR.Retract();
+			break;
+		case 4: // Show R
+			MFB.Turn(Direction::CW, 90, 1000);
+			MLLR.Extend();
+			MLFB.Retract();
+			MFB.Turn(Direction::CW, 90, 600);
+			MLFB.Extend();
+			MLLR.Retract();
+			break;
+		case 5: // Show B
+			MFB.Turn(Direction::CW, 90, 1000);
+			MLLR.Extend();
+			MLFB.Retract();
+			MFB.Turn(Direction::CW, 90, 600);
+			MLFB.Extend();
+			MLLR.Retract();
+			break;
+		case 6: // MFB Extended Horizontal // MLR Retracted Vertical
+			// Restore F top then show D
+			MLLR.Extend();
+			MLFB.Retract();
+			M2.Turn(Direction::CW, 90, 600); // M2 is now vertical, M6 remains horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+			MFB.Turn(Direction::CW, 180, 1000); // F is now on top
+			MLLR.Extend();
+			MLFB.Retract();
+			M6.Turn(Direction::CW, 90, 600); // M6 is now vertical too
+			MLFB.Extend();
+			MLLR.Retract();
+			M4.Turn(Direction::CW, 90, 600); // M4 is now horizontal, M8 remains vertical
+			MLLR.Extend();
+			MLFB.Retract();
+			MLR.Turn(Direction::CW, 90, 1000); // D is now on top
+			MLFB.Extend();
+			MLLR.Retract();
+			M4.Turn(Direction::CW, 90, 600); // M4 and M8 now horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			break;
 
+			// MLFB.Retract();
+			// MFB.Turn(Direction::CW, 90, 600);
+			// // MLFB.Extend();
+			// MLR.Turn(Direction::CW, 90, 1000);
+			// break;
+			// MLLR.Retract();
+			// MLR.Turn(Direction::CW, 90, 600);
+			// MLLR.Extend();
+			// MLFB.Retract();
+			// MLR.Turn(Direction::CW, 90, 1000);
+			// break;
+		case 7: // Restore cube and motor states
+			MLFB.Extend();
+			MLLR.Retract();
+			M8.Turn(Direction::CW, 90, 600); // M8 now vertical, M4 remains horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			MLR.Turn(Direction::ACW, 180, 1000); // U now on top
+			MLFB.Extend();
+			MLLR.Retract();
+			M4.Turn(Direction::CW, 90, 600); // M8 and M4 vertical after turning M4
+			MLLR.Extend();
 			break;
 	}
+
+	// switch (face) {
+	// 	// U to R
+	// 	case 1:
+	// 		this->Retract(M3);
+	// 		M4.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M3);
+	// 		MLFB.Retract();
+	// 		MLR.Turn(Direction::CW, 90, 1000); // Check if CW or ACW - Put F on top
+
+	// 		MLFB.Extend();
+	// 		this->Retract(M7);
+	// 		M8.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M7);
+
+	// 		this->Retract(M1);
+	// 		M2.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M1);
+	// 		MLLR.Retract();
+
+	// 		MFB.Turn(Direction::CW, 90, 1000); // R on top
+	// 		break;
+	// 	case 2:
+	// 		MFB.Turn(Direction::ACW, 90, 1000); // F on top
+	// 		break;
+	// 	case 3:
+	// 		MLLR.Extend();
+
+	// 		this->Retract(M1);
+	// 		M2.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M1);
+
+	// 		this->Retract(M3);
+	// 		M4.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M3);
+	// 		MLFB.Retract();
+
+	// 		MLR.Turn(Direction::CW, 90, 1000); // D on top
+	// 		break;
+	// 	case 4:
+	// 		MLR.Turn(Direction::ACW, 90, 1000); // Put F back on top
+
+	// 		MLFB.Extend();
+
+	// 		this->Retract(M3);
+	// 		M4.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M3);
+
+	// 		this->Retract(M1);
+	// 		M2.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M1);
+
+	// 		MLLR.Retract();
+
+	// 		MFB.Turn(Direction::ACW, 90, 1000); // Put L on top
+	// 		break;
+	// 	case 5:
+	// 		MFB.Turn(Direction::CW, 270, 1000); // Put B on top
+	// 		break;
+	// 	case 6: // Reset case (bring front to position and reset motor states)
+	// 		MFB.Turn(Direction::ACW, 180, 1000); // F on top
+	// 		MLLR.Extend();
+	// 		this->Retract(M1);
+	// 		M2.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M1);
+
+	// 		this->Retract(M3);
+	// 		M4.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M3);
+	// 		MLFB.Retract();
+
+	// 		MLR.Turn(Direction::ACW, 90, 1000); // Put U on top
+			
+	// 		MLFB.Extend();
+	// 		this->Retract(M7);
+	// 		M8.Turn(Direction::CW, 90, 600);
+	// 		this->Extend(M7);
+
+	// 		break;
+	// }
 
 	// this->Retract(M1);
 	// M2.Turn(Direction::CW, 90, 600);
