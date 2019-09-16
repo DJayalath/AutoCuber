@@ -21,40 +21,99 @@ void CubeRotate::ShowNext(int face)
 			MLFB.Retract();
 			break;
 		case 2: // Show L
-			MLR.Turn(Direction::CW, 90, 1000);
-			MFB.Turn(Direction::CW, 90, 600);
 			MLFB.Extend();
 			MLLR.Retract();
-			MFB.Turn(Direction::ACW, 90, 1000);
+			M4.Turn(Direction::CW, 90, 600); // M4 vertical
 			MLLR.Extend();
 			MLFB.Retract();
-			MFB.Turn(Direction::CW, 90, 600);
+			MLR.Turn(Direction::CW, 90, 1000); // F top M4 horizontal
 			MLFB.Extend();
 			MLLR.Retract();
+			M4.Turn(Direction::CW, 90, 600); // M4 vertical
+			MLLR.Extend();
+			MLFB.Retract();
+			M2.Turn(Direction::CW, 90, 600); // M2 horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+			MFB.Turn(Direction::ACW, 90, 1000); // L on top M6 horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			M2.Turn(Direction::CW, 90, 600); // M2 horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+
+
+
+			// MLR.Turn(Direction::CW, 90, 1000);
+			// MFB.Turn(Direction::CW, 90, 600);
+			// MLFB.Extend();
+			// MLLR.Retract();
+			// MFB.Turn(Direction::ACW, 90, 1000);
+			// MLLR.Extend();
+			// MLFB.Retract();
+			// MFB.Turn(Direction::CW, 90, 600);
+			// MLFB.Extend();
+			// MLLR.Retract();
 			break;
 		case 3: // Show F
-			MFB.Turn(Direction::CW, 90, 1000);
 			MLLR.Extend();
 			MLFB.Retract();
-			MFB.Turn(Direction::CW, 90, 600);
+			M2.Turn(Direction::CW, 90, 600); // M2 vertical
 			MLFB.Extend();
 			MLLR.Retract();
+			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+
+			// MFB.Turn(Direction::CW, 90, 1000);
+			// MLLR.Extend();
+			// MLFB.Retract();
+			// MFB.Turn(Direction::CW, 90, 600);
+			// MLFB.Extend();
+			// MLLR.Retract();
 			break;
 		case 4: // Show R
-			MFB.Turn(Direction::CW, 90, 1000);
 			MLLR.Extend();
 			MLFB.Retract();
-			MFB.Turn(Direction::CW, 90, 600);
+			M2.Turn(Direction::CW, 90, 600); // M2 vertical
 			MLFB.Extend();
 			MLLR.Retract();
+			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+
+			// MFB.Turn(Direction::CW, 90, 1000);
+			// MLLR.Extend();
+			// MLFB.Retract();
+			// MFB.Turn(Direction::CW, 90, 600);
+			// MLFB.Extend();
+			// MLLR.Retract();
 			break;
 		case 5: // Show B
-			MFB.Turn(Direction::CW, 90, 1000);
 			MLLR.Extend();
 			MLFB.Retract();
-			MFB.Turn(Direction::CW, 90, 600);
+			M2.Turn(Direction::CW, 90, 600); // M2 vertical
 			MLFB.Extend();
 			MLLR.Retract();
+			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
+			MLLR.Extend();
+			MLFB.Retract();
+			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
+			MLFB.Extend();
+			MLLR.Retract();
+
+			// MFB.Turn(Direction::CW, 90, 1000);
+			// MLLR.Extend();
+			// MLFB.Retract();
+			// MFB.Turn(Direction::CW, 90, 600);
+			// MLFB.Extend();
+			// MLLR.Retract();
 			break;
 		case 6: // MFB Extended Horizontal // MLR Retracted Vertical
 			// Restore F top then show D
@@ -455,6 +514,37 @@ void CubeRotate::D(int count, bool n)
 	this->Retract(M7);
 	M8.Turn(Direction::CW, 90, 600);
 	this->Extend(M7);
+}
+
+void CubeRotate::Y(int count, bool n) 
+{
+	MLFB.Retract();
+	M2.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
+	MLLR.Retract();
+	MFB.Turn(Direction::CW, 90, 1000);
+	MLLR.Extend();
+	MLFB.Retract();
+	M6.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
+	MLLR.Retract();
+	M4.Turn(Direction::CW, 90, 600);
+	MLLR.Extend();
+	MLFB.Retract();
+	MLR.Turn(Direction::ACW, 90, 1000);
+	MLFB.Extend();
+	MLLR.Retract();
+	M8.Turn(Direction::CW, 90, 600);
+	MLLR.Extend();
+	MLFB.Retract();
+	M2.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
+	MLLR.Retract();
+	MFB.Turn(Direction::ACW, 90, 1000);
+	MLLR.Extend();
+	MLFB.Retract();
+	M6.Turn(Direction::CW, 90, 600);
+	MLFB.Extend();
 }
 
 void CubeRotate::Retract(MotorDriver& M)

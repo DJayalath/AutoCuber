@@ -15,6 +15,9 @@ int speed = 1000;
 int counter = 0;
 int msg = 1;
 int face = 1;
+
+bool rpi_ready = false;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -36,72 +39,157 @@ void setup()
 }
 
 void loop() {
-	byte n = 10;
-	Serial.write(n);
-	delay(100);
-	int rc = Serial.read();
-	switch (rc) {
-	case 'A':
-		CR.ShowNext(face);
-		face += 1;
-		break;
-	case 'Z':
-		CR.Scramble();
-		break;
-	case 'R':
-		CR.R(1);
-		counter += 1;
-		break;
-	case 'S':
-		CR.R(1, true);
-		counter += 1;
-		break;
-	case 'L':
-		CR.L(1);
-		counter += 1;
-		break;
-	case 'M':
-		CR.L(1, true);
-		counter += 1;
-		break;
-	case 'U':
-		CR.U(1);
-		counter += 1;
-		break;
-	case 'V':
-		CR.U(1, true);
-		counter += 1;
-		break;
-	case 'D':
-		CR.D(1);
-		counter += 1;
-		break;
-	case 'E':
-		CR.D(1, true);
-		counter += 1;
-		break;
-	case 'F':
-		CR.Fr(1);
-		counter += 1;
-		break;
-	case 'G':
-		CR.Fr(1, true);
-		counter += 1;
-		break;
-	case 'B':
-		CR.B(1);
-		counter += 1;
-		break;
-	case 'C':
-		CR.B(1, true);
-		counter += 1;
-		break;
+
+	if (!rpi_ready) {
+		delay(200);
+		Serial.write(90);
 	}
-	if (rc != -1) {
-		Serial.write(35);
+
+	if (Serial.available() > 0) {
+
+		int rx = Serial.read();
+
+		switch(rx) {
+			case 80:
+
+				if (!rpi_ready) {
+					rpi_ready = true;
+				}
+
+				CR.ShowNext(face);
+				face += 1;
+
+				// Tell RPI that face operation has finished (92 if totally finished, 91 if only side finished)
+				Serial.write((face > 7) ? 92 : 91);
+
+				break;
+			case 'R':
+				CR.R(1);
+				Serial.write(93);
+				break;
+			case 'S':
+				CR.R(1, true);
+				Serial.write(93);
+				break;
+			case 'L':
+				CR.L(1);
+				Serial.write(93);
+				break;
+			case 'M':
+				CR.L(1, true);
+				Serial.write(93);
+				break;
+			case 'U':
+				CR.U(1);
+				Serial.write(93);
+				break;
+			case 'V':
+				CR.U(1, true);
+				Serial.write(93);
+				break;
+			case 'D':
+				CR.D(1);
+				Serial.write(93);
+				break;
+			case 'E':
+				CR.D(1, true);
+				Serial.write(93);
+				break;
+			case 'F':
+				CR.Fr(1);
+				Serial.write(93);
+				break;
+			case 'G':
+				CR.Fr(1, true);
+				Serial.write(93);
+				break;
+			case 'B':
+				CR.B(1);
+				Serial.write(93);
+				break;
+			case 'C':
+				CR.B(1, true);
+				Serial.write(93);
+				break;
+			case 'Y':
+				CR.Y(1);
+				Serial.write(93);
+				break;
+		}
+
+		Serial.flush();
+
+		// Clear buffer
+		while (Serial.available() > 0) rx = Serial.read();
 	}
-	Serial.flush();
-	delay(100);
+
+
+	// byte n = 10;
+	// Serial.write(n);
+	// delay(100);
+	// int rc = Serial.read();
+	// switch (rc) {
+	// case 'A':
+	// 	CR.ShowNext(face);
+	// 	face += 1;
+	// 	break;
+	// case 'Z':
+	// 	CR.Scramble();
+	// 	break;
+	// case 'R':
+	// 	CR.R(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'S':
+	// 	CR.R(1, true);
+	// 	counter += 1;
+	// 	break;
+	// case 'L':
+	// 	CR.L(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'M':
+	// 	CR.L(1, true);
+	// 	counter += 1;
+	// 	break;
+	// case 'U':
+	// 	CR.U(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'V':
+	// 	CR.U(1, true);
+	// 	counter += 1;
+	// 	break;
+	// case 'D':
+	// 	CR.D(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'E':
+	// 	CR.D(1, true);
+	// 	counter += 1;
+	// 	break;
+	// case 'F':
+	// 	CR.Fr(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'G':
+	// 	CR.Fr(1, true);
+	// 	counter += 1;
+	// 	break;
+	// case 'B':
+	// 	CR.B(1);
+	// 	counter += 1;
+	// 	break;
+	// case 'C':
+	// 	CR.B(1, true);
+	// 	counter += 1;
+	// 	break;
+	// }
+	// if (rc != -1) {
+	// 	Serial.write(35);
+	// }
+	// Serial.flush();
+	// delay(100);
 	// if (counter % 2 == 0 && counter != 0) {
 	// 	CR.Correct();
 	// }

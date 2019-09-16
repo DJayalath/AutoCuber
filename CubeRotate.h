@@ -32,6 +32,7 @@ public:
 	void D(int count, bool n = false);
 	void B(int count, bool n = false);
 	void Fr(int count, bool n = false);
+	void Y(int count, bool n = false);
 private:
 	void Retract(MotorDriver& M);
 	void Extend(MotorDriver& M);
