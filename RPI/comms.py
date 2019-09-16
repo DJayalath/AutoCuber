@@ -4,6 +4,23 @@ import serial
 from rubik_solver import utils
 from pic import manual_analyse, analyse
 
+# Compress instructions for more efficient processing by arduino
+def compress_instructions(ins):
+    moves = []
+    idx = 0
+    while idx < len(ins):
+        ndx = 1
+        while True:
+            if idx + ndx >= len(ins):
+                break
+            elif ins[idx] == ins[idx + ndx]:
+                ndx += 1
+            else:
+                break
+        moves.append((ins[idx] + str(ndx)).encode())
+        idx += ndx
+    return moves
+
 # Format into single instruction list from solution
 def format_instruction_list(ins):
     ins = " ".join(str(e) for e in ins)
@@ -12,14 +29,14 @@ def format_instruction_list(ins):
     moves = []
     for mov in ins:
         if len(mov) == 1:
-            moves.append(mov.encode())
+            moves.append(mov)
         else:
             if mov[1] != "'":
-                moves.append(mov[0].encode())
-                moves.append(mov[0].encode())
+                moves.append(mov[0])
+                moves.append(mov[0])
             else:
-                moves.append(chr(ord(mov[0]) + 1).encode())
-    return moves
+                moves.append(chr(ord(mov[0]) + 1))
+    return compress_instructions(moves)
 
 # Open serial communication with Arduino Mega
 ser = serial.Serial("/dev/ttyUSB0", 9600) # Establish the connection on a specific port
@@ -54,7 +71,12 @@ while True:
             elif ord(rx) == 92: # Finished showing all faces and reset
                 # Calculate solution
                 print("Calculating solution...")
-                solution = utils.solve(cube, 'Kociemba')
+                try:
+                    solution = utils.solve(cube, 'Kociemba')
+                    print("Solution found using Kociemba method")
+                except:
+                    solution = utils.solve(cube, 'CFOP')
+                    print("Solution found using CFOP method")
                 # Format into list of instructions
                 print("Formatting solution into simple instructions...")
                 moves = format_instruction_list(solution)

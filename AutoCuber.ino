@@ -17,6 +17,7 @@ int msg = 1;
 int face = 1;
 
 bool rpi_ready = false;
+bool solve_mode = false;
 
 void setup()
 {
@@ -47,7 +48,17 @@ void loop() {
 
 	if (Serial.available() > 0) {
 
-		int rx = Serial.read();
+		int rx, iterations;
+		if (!solve_mode)
+			rx = Serial.read();
+		else {
+			while (Serial.available() < 2);
+			rx = Serial.read();
+			iterations = Serial.read() - 48;
+			// String srx = Serial.readString();
+			// rx = srx.charAt(0);
+			// iterations = srx.charAt(1) - 48;
+		}
 
 		switch(rx) {
 			case 80:
@@ -60,59 +71,64 @@ void loop() {
 				face += 1;
 
 				// Tell RPI that face operation has finished (92 if totally finished, 91 if only side finished)
-				Serial.write((face > 7) ? 92 : 91);
+				if (face > 7) {
+					Serial.write(92);
+					solve_mode = true;
+				} else {
+					Serial.write(91);
+				}
 
 				break;
 			case 'R':
-				CR.R(1);
+				CR.R(iterations);
 				Serial.write(93);
 				break;
 			case 'S':
-				CR.R(1, true);
+				CR.R(iterations, true);
 				Serial.write(93);
 				break;
 			case 'L':
-				CR.L(1);
+				CR.L(iterations);
 				Serial.write(93);
 				break;
 			case 'M':
-				CR.L(1, true);
+				CR.L(iterations, true);
 				Serial.write(93);
 				break;
 			case 'U':
-				CR.U(1);
+				CR.U(iterations);
 				Serial.write(93);
 				break;
 			case 'V':
-				CR.U(1, true);
+				CR.U(iterations, true);
 				Serial.write(93);
 				break;
 			case 'D':
-				CR.D(1);
+				CR.D(iterations);
 				Serial.write(93);
 				break;
 			case 'E':
-				CR.D(1, true);
+				CR.D(iterations, true);
 				Serial.write(93);
 				break;
 			case 'F':
-				CR.Fr(1);
+				CR.Fr(iterations);
 				Serial.write(93);
 				break;
 			case 'G':
-				CR.Fr(1, true);
+				CR.Fr(iterations, true);
 				Serial.write(93);
 				break;
 			case 'B':
-				CR.B(1);
+				CR.B(iterations);
 				Serial.write(93);
 				break;
 			case 'C':
-				CR.B(1, true);
+				CR.B(iterations, true);
 				Serial.write(93);
 				break;
 			case 'Y':
-				CR.Y(1);
+				CR.Y(iterations);
 				Serial.write(93);
 				break;
 		}
