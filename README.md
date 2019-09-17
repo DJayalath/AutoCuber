@@ -30,3 +30,7 @@ shortest euclidian distance is used to determine which class the colour belongs 
 The `ckociemba` library is used to find a solution using Kociemba's method. The set of instructions to solve the cube are sent 
 one by one to the Arduino Mega which uses the motors to complete each move on the cube. **TODO: A custom implementation of 
 Kociemba's algorithm.**
+### Other Pictures
+![](https://i.imgur.com/AueXEIw.jpg)
+![](https://i.imgur.com/62SrAlG.jpg)
+![](https://i.imgur.com/t91uXCs.jpg)
