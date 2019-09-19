@@ -3,6 +3,24 @@ from time import sleep
 import serial
 import kociemba
 from pic import manual_analyse, analyse
+import random
+
+def scramble():
+    scramble_length = 20
+    moves = [b'R1', b'S1', b'R2', b'L1', b'M1', b'L2', b'U1', b'V1', b'U2', b'D1', b'E1', b'D2', b'F1', b'G1', b'F2', b'B1', b'C1', b'B2']
+    scramble = []
+    
+    for i in range(0, scramble_length):
+        random_move = random.randint(0, len(moves) - 1)
+        
+        if i > 0:
+            while moves[random_move][0] == prev_move[0]:
+                random_move = random.randint(0, len(moves) - 1)         
+            
+        scramble.append(moves[random_move])
+        prev_move = moves[random_move]
+        
+    return scramble
 
 def human_comms():
     print("Hello, I am...\n")
@@ -81,79 +99,108 @@ def format_instruction_list(ins):
                 moves.append(chr(ord(mov[0]) + 1))
     return compress_instructions(moves)
 
-# Open serial communication with Arduino Mega
-ser = serial.Serial("/dev/ttyUSB0", 9600) # Establish the connection on a specific port
-ser.flushInput()
+try:
+    # Open serial communication with Arduino Mega
+    ser = serial.Serial("/dev/ttyUSB0", 9600) # Establish the connection on a specific port
+    ser.flushInput()
 
-scan_order = ['U', 'L', 'F', 'R', 'B', 'D']
-required_order = ['U', 'R', 'F', 'D', 'L', 'B']
-cube = {}
-moves = []
-arduino_ready = False
+    scan_order = ['U', 'L', 'F', 'R', 'B', 'D']
+    required_order = ['U', 'R', 'F', 'D', 'L', 'B']
+    cube = {}
+    moves = []
+    arduino_ready = False
 
-print("System frying up...")
+    print("System frying up...")
 
-while True:
-    
-    if ser.inWaiting() > 0:
+    while True:
         
-        rx = ser.read() # Read one byte
-        
-        # Check if arduino is now ready
-        if not arduino_ready:
-            if ord(rx) == 90:
-                arduino_ready = True
-                answer = human_comms()
-                if answer == 1:
+        if ser.inWaiting() > 0:
+            
+            rx = ser.read() # Read one byte
+            
+            # Check if arduino is now ready
+            if not arduino_ready:
+                if ord(rx) == 90:
+                    arduino_ready = True
+                    # Tell arduino RPI is also ready
+                    ser.write(chr(79).encode())
+                    #answer = human_comms()
+                    # if answer == 1:
+                    #     ser.write(chr(80).encode())
+                    #     print("\nIt's time to show your face. Come down to the Buttermilk nebula for 11 herbs and spices you won't be able to resist.")
+                    # elif answer == 2:
+                    #     ser.write(chr(81).encode())
+                    #     print("\nScramble scramble! KFC university offers free scrambled egg courses with every employment contract!")
+                    # elif answer == 3:
+                    #     print("\nI hope you found a seat. I want you to be safe. Goodbye.")
+                    #     break
+            else:
+                if ord(rx) == 99: # Ready to begin scramble
+                    print("Starting scramble")
+                    moves = scramble()
+                    print("Scramble generated")
+                    print("Sending move: {0}".format(moves[0]))
+                    ser.write(moves.pop(0))
+                elif ord(rx) == 95: # Ready to begin solve process
+                    # Start showing faces for scanning
+                    print("Sending signal to start scanning process")
                     ser.write(chr(80).encode())
-                    print("\nIt's time to show your face. Come down to the Buttermilk nebula for 11 herbs and spices you won't be able to resist.")
-                elif answer == 2:
-                    ser.write(chr(81).encode())
-                    print("\nScramble scramble! KFC university offers free scrambled egg courses with every employment contract!")
-                elif answer == 3:
-                    print("\nI hope you found a seat. I want you to be safe. Goodbye.")
-                    break
-        else:
-            if ord(rx) == 91: # Shown a face
-                # Take image and scan
-                print("\nI'm scanning a face... Not yours.")
-                cube[scan_order[0]] = analyse()
-                # Remove face from scanning stack
-                scan_order.pop(0)
-                # Show next face
-                ser.write(chr(80).encode())
-                print("\nLet's flip that cube around just like you'll be learning to flip zingers at KFC University.")
-            elif ord(rx) == 92: # Finished showing all faces and reset
-                print("\nTime to deep fry. I'm calculating a solution...")
-                # Re-organise scan order
-                cube_formatted = ""
-                for face in required_order:
-                    cube_formatted += cube[face]
-                # Convert to cube string notation
-                cube_formatted = cube_string_notation(cube_formatted, required_order)
-                # Calculate solution
-                #print("Calculating solution...")
-                solution = kociemba.solve(cube_formatted)
-                #print("Solution found!")
-                # Format into list of instructions
-                #print("Formatting solution into simple instructions...")
-                moves = format_instruction_list(solution)
-                print("\nYour order is ready.\n")
-                # Send first move
-                print("Sending move: {0}".format(moves[0]))
-                ser.write(moves.pop(0))
-            elif ord(rx) == 93: # Finished a move
-                # Send next move
-                print("Sending move: {0}".format(moves[0]))
-                ser.write(moves.pop(0))
-                # Check if moves list is now empty
-                if not moves:
-                    break
-                
-        ser.flush()
+                elif ord(rx) == 91: # Shown a face
+                    # Take image and scan
+                    print("\nI'm scanning a face... Not yours.")
+                    cube[scan_order[0]] = analyse()
+                    # Remove face from scanning stack
+                    scan_order.pop(0)
+                    # Show next face
+                    ser.write(chr(80).encode())
+                    print("\nLet's flip that cube around just like you'll be learning to flip zingers at KFC University.")
+                elif ord(rx) == 92: # Finished showing all faces and reset
+                    print("\nTime to deep fry. I'm calculating a solution...")
+                    # Re-organise scan order
+                    cube_formatted = ""
+                    for face in required_order:
+                        cube_formatted += cube[face]
+                    # Convert to cube string notation
+                    cube_formatted = cube_string_notation(cube_formatted, required_order)
+                    # Calculate solution
+                    #print("Calculating solution...")
+                    solution = kociemba.solve(cube_formatted)
+                    #print("Solution found!")
+                    # Format into list of instructions
+                    #print("Formatting solution into simple instructions...")
+                    moves = format_instruction_list(solution)
+                    print("\nYour order is ready.\n")
+                    # Send first move
+                    print("Sending move: {0}".format(moves[0]))
+                    ser.write(moves.pop(0))
+                elif ord(rx) == 93: # Finished a move
+                    # Send next move
+                    print("Sending move: {0}".format(moves[0]))
+                    ser.write(moves.pop(0))
+                    # Check if moves list is now empty
+                    if not moves:
+                        arduino_ready = False
+                        print("Sending reset signal!")
+                        ser.write('Z1'.encode())
+                elif ord(rx) == 97:
+                    print("Finished!")
+                    arduino_ready = False
+                elif ord(rx) == 98:
+                    print("Shutting down...")
+                    from subprocess import call
+                    call("sudo nohup shutdown -h now", shell=True)
+                    
+            ser.flush()
 
-print("\nThis bargain bucket of bolts is done. By using this program you have agreed to a lifetime of servitude to KFC inc.")
-# Close serial connection
-#print("Closing serial connection...")
-ser.close()
-#print("End.")
+    print("\nThis bargain bucket of bolts is done. By using this program you have agreed to a lifetime of servitude to KFC inc.")
+    # Close serial connection
+    #print("Closing serial connection...")
+    ser.close()
+    #print("End.")
+except KeyboardInterrupt:
+    exit()
+except Exception as e:
+    print("Error: {0}".format(e))
+    print("Shutting down...")
+    from subprocess import call
+    call("sudo nohup shutdown -h now", shell=True)
