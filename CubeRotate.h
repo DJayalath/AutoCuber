@@ -33,7 +33,10 @@ public:
 	void B(int count, bool n = false);
 	void Fr(int count, bool n = false);
 	void Y(int count, bool n = false);
+	void UTop();
+	void FTop();
 private:
+	bool u_top = true;
 	void Retract(MotorDriver& M);
 	void Extend(MotorDriver& M);
 
