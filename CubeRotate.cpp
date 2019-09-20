@@ -319,6 +319,8 @@ void CubeRotate::MoveRail(MoveMode M, Rail& A, Rail& B) {
 		pulse_delay = 1000;
 		linear = false;
 	} else {
+		// If extending opposite rails add one microstep
+		// to maintain a firm grip on the cube
 		if (M == EXTEND) {
 			steps = 50 * 8 + 1;
 		} else {
