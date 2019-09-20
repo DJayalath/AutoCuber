@@ -1,588 +1,482 @@
 #include "CubeRotate.h"
 #include "Arduino.h"
-CubeRotate::CubeRotate(MotorDriver A, MotorDriver B, MotorDriver C, MotorDriver D, MotorDriver E, MotorDriver F, MotorDriver G, MotorDriver H) :
-					   M1(A), M2(B), M3(C), M4(D),
-					   M5(E), M6(F), M7(G), M8(H), 
-					   MFB(B.GetStepPin(), B.GetDirPin(), F.GetStepPin(), F.GetDirPin()),
-					   MLR(D.GetStepPin(), D.GetDirPin(), H.GetStepPin(), H.GetDirPin()),
-					   MLFB(A.GetStepPin(), A.GetDirPin(), E.GetStepPin(), E.GetDirPin()),
-					   MLLR(C.GetStepPin(), C.GetDirPin(), G.GetStepPin(), G.GetDirPin())
-{
+CubeRotate::CubeRotate(Rail front, Rail left, Rail back, Rail right) : front(front), left(left), back(back), right(right)
+{}
 
-}
-
+// Run a set of fixed instructions to go from showing one face
+// to another. Transitions are fixed and must be in sequence.
 void CubeRotate::ShowNext(int face)
 {
 	switch(face) {
 		case 1: // Show U
-			MLLR.Retract();
-			MLR.Turn(Direction::CW, 90, 600);
-			MLLR.Extend();
-			MLFB.Retract();
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left, right);
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
 			break;
 		case 2: // Show L
-			MLFB.Extend();
-			MLLR.Retract();
-			M4.Turn(Direction::CW, 90, 600); // M4 vertical
-			MLLR.Extend();
-			MLFB.Retract();
-			MLR.Turn(Direction::CW, 90, 1000); // F top M4 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-			M4.Turn(Direction::CW, 90, 600); // M4 vertical
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-			MFB.Turn(Direction::ACW, 90, 1000); // L on top M6 horizontal
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-
-
-
-			// MLR.Turn(Direction::CW, 90, 1000);
-			// MFB.Turn(Direction::CW, 90, 600);
-			// MLFB.Extend();
-			// MLLR.Retract();
-			// MFB.Turn(Direction::ACW, 90, 1000);
-			// MLLR.Extend();
-			// MLFB.Retract();
-			// MFB.Turn(Direction::CW, 90, 600);
-			// MLFB.Extend();
-			// MLLR.Retract();
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left); // M4 vertical
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, left, right); // F top M4 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left); // M4 vertical
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_ACW, front, back); // L on top M6 horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
 			break;
 		case 3: // Show F
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 vertical
-			MLFB.Extend();
-			MLLR.Retract();
-			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
-			MLLR.Extend();
-			MLFB.Retract();
-			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-
-			// MFB.Turn(Direction::CW, 90, 1000);
-			// MLLR.Extend();
-			// MLFB.Retract();
-			// MFB.Turn(Direction::CW, 90, 600);
-			// MLFB.Extend();
-			// MLLR.Retract();
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 vertical
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, front, back); // F on top M2 horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, back); // M6 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
 			break;
 		case 4: // Show R
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 vertical
-			MLFB.Extend();
-			MLLR.Retract();
-			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
-			MLLR.Extend();
-			MLFB.Retract();
-			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-
-			// MFB.Turn(Direction::CW, 90, 1000);
-			// MLLR.Extend();
-			// MLFB.Retract();
-			// MFB.Turn(Direction::CW, 90, 600);
-			// MLFB.Extend();
-			// MLLR.Retract();
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 vertical
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, front, back); // F on top M2 horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, back); // M6 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
 			break;
 		case 5: // Show B
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 vertical
-			MLFB.Extend();
-			MLLR.Retract();
-			MFB.Turn(Direction::CW, 90, 1000); // F on top M2 horizontal
-			MLLR.Extend();
-			MLFB.Retract();
-			M6.Turn(Direction::CW, 90, 600); // M6 horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-
-			// MFB.Turn(Direction::CW, 90, 1000);
-			// MLLR.Extend();
-			// MLFB.Retract();
-			// MFB.Turn(Direction::CW, 90, 600);
-			// MLFB.Extend();
-			// MLLR.Retract();
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 vertical
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, front, back); // F on top M2 horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, back); // M6 horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
 			break;
 		case 6: // MFB Extended Horizontal // MLR Retracted Vertical
 			// Restore F top then show D
-			MLLR.Extend();
-			MLFB.Retract();
-			M2.Turn(Direction::CW, 90, 600); // M2 is now vertical, M6 remains horizontal
-			MLFB.Extend();
-			MLLR.Retract();
-			MFB.Turn(Direction::CW, 180, 1000); // F is now on top
-			MLLR.Extend();
-			MLFB.Retract();
-			M6.Turn(Direction::CW, 90, 600); // M6 is now vertical too
-			MLFB.Extend();
-			MLLR.Retract();
-			M4.Turn(Direction::CW, 90, 600); // M4 is now horizontal, M8 remains vertical
-			MLLR.Extend();
-			MLFB.Retract();
-			MLR.Turn(Direction::CW, 90, 1000); // D is now on top
-			MLFB.Extend();
-			MLLR.Retract();
-			M4.Turn(Direction::CW, 90, 600); // M4 and M8 now horizontal
-			MLLR.Extend();
-			MLFB.Retract();
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, front); // M2 is now vertical, M6 remains horizontal
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, front, back);
+			this->MoveRail(TURN_CW, front, back); // F is now on top
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, back); // M6 is now vertical too
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left); // M4 is now horizontal, M8 remains vertical
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_CW, left, right); // D is now on top
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left); // M4 and M8 now horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
 			break;
-
-			// MLFB.Retract();
-			// MFB.Turn(Direction::CW, 90, 600);
-			// // MLFB.Extend();
-			// MLR.Turn(Direction::CW, 90, 1000);
-			// break;
-			// MLLR.Retract();
-			// MLR.Turn(Direction::CW, 90, 600);
-			// MLLR.Extend();
-			// MLFB.Retract();
-			// MLR.Turn(Direction::CW, 90, 1000);
-			// break;
 		case 7: // Restore cube and motor states
-			MLFB.Extend();
-			MLLR.Retract();
-			M8.Turn(Direction::CW, 90, 600); // M8 now vertical, M4 remains horizontal
-			MLLR.Extend();
-			MLFB.Retract();
-			MLR.Turn(Direction::ACW, 180, 1000); // U now on top
-			MLFB.Extend();
-			MLLR.Retract();
-			M4.Turn(Direction::CW, 90, 600); // M8 and M4 vertical after turning M4
-			MLLR.Extend();
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, right); // M8 now vertical, M4 remains horizontal
+			this->MoveRail(EXTEND, left, right);
+			this->MoveRail(RETRACT, front, back);
+			this->MoveRail(TURN_ACW, left, right);
+			this->MoveRail(TURN_ACW, left, right); // U now on top
+			this->MoveRail(EXTEND, front, back);
+			this->MoveRail(RETRACT, left, right);
+			this->MoveRail(TURN_CW, left); // M8 and M4 vertical after turning M4
+			this->MoveRail(EXTEND, left, right);
 			break;
 	}
-
-	// switch (face) {
-	// 	// U to R
-	// 	case 1:
-	// 		this->Retract(M3);
-	// 		M4.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M3);
-	// 		MLFB.Retract();
-	// 		MLR.Turn(Direction::CW, 90, 1000); // Check if CW or ACW - Put F on top
-
-	// 		MLFB.Extend();
-	// 		this->Retract(M7);
-	// 		M8.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M7);
-
-	// 		this->Retract(M1);
-	// 		M2.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M1);
-	// 		MLLR.Retract();
-
-	// 		MFB.Turn(Direction::CW, 90, 1000); // R on top
-	// 		break;
-	// 	case 2:
-	// 		MFB.Turn(Direction::ACW, 90, 1000); // F on top
-	// 		break;
-	// 	case 3:
-	// 		MLLR.Extend();
-
-	// 		this->Retract(M1);
-	// 		M2.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M1);
-
-	// 		this->Retract(M3);
-	// 		M4.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M3);
-	// 		MLFB.Retract();
-
-	// 		MLR.Turn(Direction::CW, 90, 1000); // D on top
-	// 		break;
-	// 	case 4:
-	// 		MLR.Turn(Direction::ACW, 90, 1000); // Put F back on top
-
-	// 		MLFB.Extend();
-
-	// 		this->Retract(M3);
-	// 		M4.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M3);
-
-	// 		this->Retract(M1);
-	// 		M2.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M1);
-
-	// 		MLLR.Retract();
-
-	// 		MFB.Turn(Direction::ACW, 90, 1000); // Put L on top
-	// 		break;
-	// 	case 5:
-	// 		MFB.Turn(Direction::CW, 270, 1000); // Put B on top
-	// 		break;
-	// 	case 6: // Reset case (bring front to position and reset motor states)
-	// 		MFB.Turn(Direction::ACW, 180, 1000); // F on top
-	// 		MLLR.Extend();
-	// 		this->Retract(M1);
-	// 		M2.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M1);
-
-	// 		this->Retract(M3);
-	// 		M4.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M3);
-	// 		MLFB.Retract();
-
-	// 		MLR.Turn(Direction::ACW, 90, 1000); // Put U on top
-			
-	// 		MLFB.Extend();
-	// 		this->Retract(M7);
-	// 		M8.Turn(Direction::CW, 90, 600);
-	// 		this->Extend(M7);
-
-	// 		break;
-	// }
-
-	// this->Retract(M1);
-	// M2.Turn(Direction::CW, 90, 600);
-	// this->Extend(M1);
-	// MLLR.Retract();
-	// MFB.Turn(Direction::CW, 90, 600);
-
-	// delay(1000);
-
-	// MLLR.Extend();
-	// this->Retract(M5);
-	// M6.Turn(Direction::CW, 90, 600);
-	// this->Extend(M5);
-
-	// this->Retract(M3);
-	// M4.Turn(Direction::CW, 90, 600);
-	// this->Extend(M3);
-	// MLFB.Retract();
-	// MLR.Turn(Direction::CW, 90, 600);
-
-	// delay(1000);
-
-	// // Return to normal
-	// MLFB.Extend();
-	// this->Retract(M7);
-	// M8.Turn(Direction::CW, 90, 600);
-	// this->Extend(M7);
-
-
-
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	MFB.Turn(Direction::CW, 90, 1000);
-	//	delay(1000);
-	//}
-	//MLLR.Retract();
-
-
-
-	// MLFB.Retract();
-	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// // Extend FB
-	// MLFB.Extend();
-	// MLFB.Turn(Direction::CW, 2 * 8, true);
-	// // Retract LR
-	// MLLR.Retract();
-	// delay(1000); // CAPTURE U
-	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// // Extend LR
-	// MLLR.Extend();
-	// MLLR.Turn(Direction::CW, 2 * 8, true);
-	// // Retract FB
-	// MLFB.Retract();
-	// delay(1000); // CAPTURE L
-	// MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// // Extend FB
-	// MLFB.Extend();
-	// MLFB.Turn(Direction::CW, 2 * 8, true);
-	// // Retract LR
-	// MLLR.Retract();
-	// delay(1000); // CAPTURE
-	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// // Extend LR
-	// MLLR.Extend();
-	// MLLR.Turn(Direction::CW, 2 * 8, true);
-	// // Retract FB
-	// MLFB.Retract();
-	// delay(1000); // CAPTURE
-	// MLR.Turn(Direction::CW, 90, 600); // LR vertical, Cube turned
-	// MFB.Turn(Direction::CW, 90, 600); // FB horizontal
-	// // Extend FB
-	// MLFB.Extend();
-	// MLFB.Turn(Direction::CW, 2 * 8, true);
-	// // Retract LR
-	// MLLR.Retract();
-	// delay(1000); // CAPTURE
-	// MFB.Turn(Direction::CW, 90, 600); // FB vertical, Cube turned
-	// MLR.Turn(Direction::CW, 90, 600); // LR horizontal
-	// // Extend LR
-	// MLLR.Extend();
-	// MLLR.Turn(Direction::CW, 2 * 8, true);
-	// // Retract FB
-	// MLFB.Retract();
-	// delay(1000); // CAPTURE
-	// //MFB.Turn(Direction::CW, 90, 600);
-	// MLFB.Extend();
-	// MLLR.Retract();
-	// MLR.Turn(Direction::CW, 90, 600);
-	// MLLR.Extend();
-}
-
-void CubeRotate::Scramble()
-{
-	randomSeed(analogRead(0));
-
-	int side[6];
-	for (int i = 0; i < 6; i++) {
-		side[i] = random(4);
-	}
-
-	M2.Turn(Direction::CW, 90 * side[0], 600);
-	if (side[0] % 2 != 0) {
-		this->Retract(M1);
-		M2.Turn(Direction::CW, 90, 600);
-		this->Extend(M1);
-	}
-
-	M4.Turn(Direction::CW, 90 * side[1], 600);
-	if (side[1] % 2 != 0) {
-		this->Retract(M3);
-		M4.Turn(Direction::CW, 90, 600);
-		this->Extend(M3);
-	}
-
-	M6.Turn(Direction::CW, 90 * side[2], 600);
-	if (side[2] % 2 != 0) {
-		this->Retract(M5);
-		M6.Turn(Direction::CW, 90, 600);
-		this->Extend(M5);
-	}
-
-	M8.Turn(Direction::CW, 90 * side[3], 600);
-	if (side[3] % 2 != 0) {
-		this->Retract(M7);
-		M8.Turn(Direction::CW, 90, 600);
-		this->Extend(M7);
-	}
-
-	this->Retract(M3);
-	M4.Turn(Direction::CW, 90, 600);
-	this->Extend(M3);
-	MLFB.Retract();
-	MLR.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
-	this->Retract(M7);
-	M8.Turn(Direction::CW, 90, 600);
-	this->Extend(M7);
-
-	M2.Turn(Direction::CW, 90 * side[4], 600);
-	if (side[4] % 2 != 0) {
-		this->Retract(M1);
-		M2.Turn(Direction::CW, 90, 600);
-		this->Extend(M1);
-	}
-
-	M6.Turn(Direction::CW, 90 * side[5], 600);
-	if (side[5] % 2 != 0) {
-		this->Retract(M5);
-		M6.Turn(Direction::CW, 90, 600);
-		this->Extend(M5);
-	}
-
-	this->Retract(M3);
-	M4.Turn(Direction::CW, 90, 600);
-	this->Extend(M3);
-	MLFB.Retract();
-	MLR.Turn(Direction::ACW, 90, 600);
-	MLFB.Extend();
-	this->Retract(M7);
-	M8.Turn(Direction::CW, 90, 600);
-	this->Extend(M7);
-
 }
 
 void CubeRotate::R(int count, bool n)
 {
+	// Put U on top if not already
 	if (!u_top) {
 		this->UTop();
-		u_top = true;
 	}
 
-	M8.Turn((Direction) n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(RIG);
 
-	if (count % 2 != 0) {
-		this->Retract(M7);
-		M8.Turn(Direction::ACW, 90, 600);
-		this->Extend(M7);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), right);
 	}
 }
 
 void CubeRotate::L(int count, bool n)
 {
+	// Put U on top if not already
 	if (!u_top) {
 		this->UTop();
-		u_top = true;
 	}
 
-	M4.Turn((Direction)n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(LEF);
 
-	if (count % 2 != 0) {
-		this->Retract(M3);
-		M4.Turn(Direction::ACW, 90, 600);
-		this->Extend(M3);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), left);
 	}
 }
 
 void CubeRotate::B(int count, bool n)
 {
+	// Put U on top if not already
 	if (!u_top) {
 		this->UTop();
-		u_top = true;
 	}
 
-	M6.Turn((Direction)n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(BAC);
 
-	if (count % 2 != 0) {
-		this->Retract(M5);
-		M6.Turn(Direction::ACW, 90, 600);
-		this->Extend(M5);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), back);
 	}
 }
 
 void CubeRotate::Fr(int count, bool n)
 {
+	// Put U on top if not already
 	if (!u_top) {
 		this->UTop();
-		u_top = true;
 	}
 
-	M2.Turn((Direction)n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(FRO);
 
-	if (count % 2 != 0) {
-		this->Retract(M1);
-		M2.Turn(Direction::ACW, 90, 600);
-		this->Extend(M1);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), front);
 	}
 }
 
 void CubeRotate::U(int count, bool n)
 {
+	// Put F on top if not already
 	if (u_top) {
 		this->FTop();
-		u_top = false;
 	}
 
-	M2.Turn((Direction)n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(FRO);
 
-	if (count % 2 != 0) {
-		this->Retract(M1);
-		M2.Turn(Direction::ACW, 90, 600);
-		this->Extend(M1);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), front);
 	}
 }
 
 void CubeRotate::D(int count, bool n)
 {
+	// Put F on top if not already
 	if (u_top) {
 		this->FTop();
-		u_top = false;
 	}
 
-	M6.Turn((Direction)n, 90 * count, 1000);
+	// Prepare for rotation
+	this->RotateState(BAC);
 
-	if (count % 2 != 0) {
-		this->Retract(M5);
-		M6.Turn(Direction::ACW, 90, 600);
-		this->Extend(M5);
+	// Rotate 90 degrees 'count' times in direction
+	for (int i = 0; i < count; i++) {
+		this->MoveRail((MoveMode) ((int) n + 2), back);
 	}
 }
 
+// Yet to be optimized. Runs fixed set of instructions for Y turn.
 void CubeRotate::Y(int count, bool n) 
 {
-	MLFB.Retract();
-	M2.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
-	MLLR.Retract();
-	MFB.Turn(Direction::CW, 90, 1000);
-	MLLR.Extend();
-	MLFB.Retract();
-	M6.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
-	MLLR.Retract();
-	M4.Turn(Direction::CW, 90, 600);
-	MLLR.Extend();
-	MLFB.Retract();
-	MLR.Turn(Direction::ACW, 90 * count, 1000);
-	MLFB.Extend();
-	MLLR.Retract();
-	M8.Turn(Direction::CW, 90, 600);
-	MLLR.Extend();
-	MLFB.Retract();
-	M2.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
-	MLLR.Retract();
-	MFB.Turn(Direction::ACW, 90, 1000);
-	MLLR.Extend();
-	MLFB.Retract();
-	M6.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
+	this->MoveRail(RETRACT, front, back);
+	this->MoveRail(TURN_CW, front);
+	this->MoveRail(EXTEND, front, back);
+	this->MoveRail(RETRACT, left, right);
+	this->MoveRail(TURN_CW, front, back);
+	this->MoveRail(EXTEND, left, right);
+	this->MoveRail(RETRACT, front, back);
+	this->MoveRail(TURN_CW, back);
+	this->MoveRail(EXTEND, front, back);
+	this->MoveRail(RETRACT, left, right);
+	this->MoveRail(TURN_CW, left);
+	this->MoveRail(EXTEND, left, right);
+	this->MoveRail(RETRACT, front, back);
+	for (int i = 0; i < count; i++) {
+		this->MoveRail(TURN_ACW, left, right);
+	}
+	this->MoveRail(EXTEND, front, back);
+	this->MoveRail(RETRACT, left, right);
+	this->MoveRail(TURN_CW, right);
+	this->MoveRail(EXTEND, left, right);
+	this->MoveRail(RETRACT, front, back);
+	this->MoveRail(TURN_CW, front);
+	this->MoveRail(EXTEND, front, back);
+	this->MoveRail(RETRACT, left, right);
+	this->MoveRail(TURN_ACW, front, back);
+	this->MoveRail(EXTEND, left, right);
+	this->MoveRail(RETRACT, front, back);
+	this->MoveRail(TURN_CW, back);
+	this->MoveRail(EXTEND, front, back);
 }
 
 void CubeRotate::FTop() {
-	this->Retract(M3);
-	M4.Turn(Direction::CW, 90, 600);
-	this->Extend(M3);
-	MLFB.Retract();
-	MLR.Turn(Direction::ACW, 90, 600);
-	MLFB.Extend();
-	this->Retract(M7);
-	M8.Turn(Direction::CW, 90, 600);
-	this->Extend(M7);
+	// Prepare for rotation
+	this->LRRotateState();
+	// Rotate!
+	this->MoveRail(TURN_ACW, left, right);
+	// Update state
+	u_top = false;
 }
 
 void CubeRotate::UTop() {
-	this->Retract(M3);
-	M4.Turn(Direction::CW, 90, 600);
-	this->Extend(M3);
-	MLFB.Retract();
-	MLR.Turn(Direction::CW, 90, 600);
-	MLFB.Extend();
-	this->Retract(M7);
-	M8.Turn(Direction::CW, 90, 600);
-	this->Extend(M7);
+	// Prepare for rotation
+	this->LRRotateState();
+	// Rotate!
+	this->MoveRail(TURN_CW, left, right);
+	// Update state
+	u_top = true;
 }
 
-void CubeRotate::Retract(MotorDriver& M)
-{
-	M.Turn(Direction::ACW, 90 * 8, 1000);
+void CubeRotate::MoveRail(MoveMode M, Rail& A) {
+
+	// Multiply steps by 8 for linear movements due to microstepping
+	// Set pins and pulse delay depending on if linear or circular movement
+	int steps, stepPin, dirPin, dir, pulse_delay;
+	if ((int) M > 1) {
+		steps = 50;
+		stepPin = A.circStep;
+		dirPin = A.circDir;
+		dir = (int) M - 2;
+		pulse_delay = 1000;
+	} else {
+		steps = 50 * 8;
+		stepPin = A.linStep;
+		dirPin = A.linDir;
+		dir = (int) M;
+		pulse_delay = 600;
+	}
+
+	// Set direction pin
+	digitalWrite(dirPin, dir);
+
+	// Send pulses to motor driver
+	for (int i = 0; i < steps; i++)
+	{
+		digitalWrite(stepPin, HIGH);
+		delayMicroseconds(pulse_delay);
+		digitalWrite(stepPin, LOW);
+		delayMicroseconds(pulse_delay);
+	}
+
+	// Set new rail state
+	if (M > 1) {
+		A.railState = (RailState) ((int) A.railState ^ 0b01);
+	} else {
+		A.railState = (RailState) ((int) A.railState ^ 0b10);
+	}
 }
 
-void CubeRotate::Extend(MotorDriver& M)
-{
-	M.Turn(Direction::CW, 90 * 8, 1000);
+// Simulatanous
+void CubeRotate::MoveRail(MoveMode M, Rail& A, Rail& B) {
+
+	// Multiply steps by 8 for linear movements due to microstepping
+	// Set pins and pulse delay depending on if linear or circular movement
+	int steps, stepPinA, dirPinA, stepPinB, dirPinB, dir, pulse_delay;
+	bool linear;
+	if (M > 1) {
+		steps = 50;
+		stepPinA = A.circStep;
+		dirPinA = A.circDir;
+		stepPinB = B.circStep;
+		dirPinB = B.circDir;
+		dir = (int) M - 2;
+		pulse_delay = 1000;
+		linear = false;
+	} else {
+		if (M == EXTEND) {
+			steps = 50 * 8 + 1;
+		} else {
+			steps = 50 * 8;
+		}
+		// steps = 50 * 8 + 6;
+		stepPinA = A.linStep;
+		dirPinA = A.linDir;
+		stepPinB = B.linStep;
+		dirPinB = B.linDir;
+		dir = (int) M;
+		pulse_delay = 600;
+		linear = true;
+	}
+
+	// Set direction pin
+	digitalWrite(dirPinA, dir);
+
+	// Spin opposite clocks if circular, or same if linear
+	if (!linear)
+		digitalWrite(dirPinB, 1 - (int)dir);
+	else
+		digitalWrite(dirPinB, dir);
+
+	// Send pulses to motor drivers
+	for (int i = 0; i < steps; i++)
+	{
+		digitalWrite(stepPinA, HIGH);
+		digitalWrite(stepPinB, HIGH);
+		delayMicroseconds(1000);
+		digitalWrite(stepPinA, LOW);
+		digitalWrite(stepPinB, LOW);
+		delayMicroseconds(1000);
+	}
+
+	// Set new rail states
+	if (M > 1) {
+		A.railState = (RailState) ((int) A.railState ^ 0b01);
+		B.railState = (RailState) ((int) B.railState ^ 0b01);
+	} else {
+		A.railState = (RailState) ((int) A.railState ^ 0b10);
+		B.railState = (RailState) ((int) B.railState ^ 0b10);
+	}
 }
 
-void CubeRotate::Correct()
-{
-	MLFB.Turn(Direction::CW, 1 * 8, 1000, true);
-	MLLR.Turn(Direction::CW, 1 * 8, 1000, true);
+void CubeRotate::LRRotateState() {
+
+	// Targets:
+	// - Alternate sides must be vertical
+	// - One of current side must be horizontal
+
+	// Make F and B vertical
+	if (front.railState == EXT_H || back.railState == EXT_H) {
+		this->MoveRail(RETRACT, front, back);
+		if (front.railState == RET_H) {
+			this->MoveRail(TURN_CW, front);
+		}
+		if (back.railState == RET_H) {
+			this->MoveRail(TURN_CW, back);
+		}
+		this->MoveRail(EXTEND, front, back);
+	}
+
+	// Make sure one of L and R are horizontal and one vertical
+	if (left.railState == right.railState) {
+		this->MoveRail(RETRACT, left, right);
+		this->MoveRail(TURN_CW, left);
+		this->MoveRail(EXTEND, left, right);
+	}
+
+	this->MoveRail(RETRACT, front, back);
 }
 
-void CubeRotate::RACW(MotorDriver& M)
-{
-	M.Turn(Direction::CW, 90, 600);
+void CubeRotate::RotateState(RotSide side) {
+
+	// FB Rotations not used in solve (so simplify)
+	// Aim for no adjacent horizontals
+
+	switch (side) {
+	case BAC: // Applies for Back too
+	case FRO: // Front - Ensure F and B can extend. Then ensure L and R are both vertical
+		// Retracted case
+		if (front.railState > 1 && back.railState > 1) {
+			if (front.railState == RET_H && (left.railState == EXT_H || right.railState == EXT_H)) {
+				this->MoveRail(TURN_CW, front);
+			}
+			if (back.railState == RET_H && (left.railState == EXT_H || right.railState == EXT_H)) {
+				this->MoveRail(TURN_CW, back);
+			}
+			this->MoveRail(EXTEND, front, back);
+		}
+		// Ensure space (includes extended case)
+		if (left.railState == EXT_H || right.railState == EXT_H) {
+			this->MoveRail(RETRACT, left, right);
+			if (left.railState == RET_H) {
+				this->MoveRail(TURN_CW, left);
+			}
+			if (right.railState == RET_H) {
+				this->MoveRail(TURN_CW, right);
+			}
+			this->MoveRail(EXTEND, left, right);
+		}
+		break;
+	case LEF:
+	case RIG:
+		// Ensure F and B extend vertical
+		if (front.railState > 1 && back.railState > 1) {
+			if (front.railState == RET_H) {
+				this->MoveRail(TURN_CW, front);
+			}
+			if (back.railState == RET_H) {
+				this->MoveRail(TURN_CW, back);
+			}
+			this->MoveRail(EXTEND, front, back);
+		} else {
+			// F and B must be vertical
+			if (front.railState == EXT_H || back.railState == EXT_H) {
+				this->MoveRail(RETRACT, front, back);
+				if (front.railState == RET_H) {
+					this->MoveRail(TURN_CW, front);
+				}
+				if (back.railState == RET_H) {
+					this->MoveRail(TURN_CW, back);
+				}
+				this->MoveRail(EXTEND, front, back);
+			}
+		}
+		break;
+	default:
+		break;
+	}
 }
 
-void CubeRotate::RAACW(MotorDriver& M)
-{
-	M.Turn(Direction::ACW, 90, 600);
+void CubeRotate:: RestoreDefaultState() {
+
+	// Put front and back into vertical extended positions
+	if (front.railState == EXT_H || back.railState == EXT_H) {
+		this->MoveRail(RETRACT, front, back);
+		if (front.railState == back.railState) {
+			this->MoveRail(TURN_CW, front, back);
+		} else if (front.railState == RET_H) {
+			this->MoveRail(TURN_CW, front);
+		} else if (back.railState == RET_H) {
+			this->MoveRail(TURN_CW, back);
+		}
+		this->MoveRail(EXTEND, front, back);
+	}
+
+	// Put left and right into vertical extended positions
+	if (left.railState == EXT_H || right.railState == EXT_H) {
+		this->MoveRail(RETRACT, left, right);
+		if (left.railState == right.railState) {
+			this->MoveRail(TURN_CW, left, right);
+		} else if (left.railState == RET_H) {
+			this->MoveRail(TURN_CW, left);
+		} else if (right.railState == RET_H) {
+			this->MoveRail(TURN_CW, right);
+		}
+		this->MoveRail(EXTEND, left, right);
+	}
 }

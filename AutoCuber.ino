@@ -1,54 +1,61 @@
-#include "MotorDriver.h"
-#include "CubeRotate.h"
+// Signal transmission
 #include <Wire.h>
+// Controlling LCD
 #include <LiquidCrystal_I2C.h>
+// Resetting arduino
 #include <avr/wdt.h>
+
+// Making rotations and moving rails
+#include "CubeRotate.h"
+// Interpretting rotary encoder inputs
 #include "RotaryEncoder.h"
 
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-
 RotaryEncoder rc(38, 37, 36);
+CubeRotate CR = CubeRotate(Rail(2, 3, 4, 5), Rail(6, 7, 8, 9), Rail(22, 23, 24, 25), Rail(26, 27, 28, 29));
 
-MotorDriver M1 = MotorDriver(2, 3);
-MotorDriver M2 = MotorDriver(4, 5);
-MotorDriver M3 = MotorDriver(6, 7);
-MotorDriver M4 = MotorDriver(8, 9);
-
-MotorDriver M5 = MotorDriver(22, 23);
-MotorDriver M6 = MotorDriver(24, 25);
-MotorDriver M7 = MotorDriver(26, 27);
-MotorDriver M8 = MotorDriver(28, 29);
-
-CubeRotate CR = CubeRotate(M1, M2, M3, M4, M5, M6, M7, M8);
-
+// Set starting face
 int face = 1;
 
+// Set starting states
 bool rpi_ready = false;
 bool solve_mode = false;
 
+// Resets arduino after putting rails in default state (extended and vertical)
 void reset_device() {
-	wdt_enable(WDTO_15MS); // turn on the WatchDog and don't stroke it.
-	for (;;) { 
-		// do nothing and wait for the eventual...
-	}
+	CR.RestoreDefaultState();
+	// Turn on the WatchDog and don't stroke it
+	wdt_enable(WDTO_15MS);
+	// Do nothing and wait for the eventual...
+	for (;;) {}
 }
 
 void setup()
 {
+	// Open serial connection with 9600 bps baudrate
 	Serial.begin(9600);
 
+	// Initialise LCD (20 columns, 4 rows)
 	lcd.begin(20, 4);
 	lcd.clear();
 	lcd.backlight();
 
+	// Output starting message
+	lcd.setCursor(0, 0);
+	lcd.print("AutoCuber");
 	lcd.setCursor(0, 1);
-	lcd.print("Starting up...");
+	lcd.print("by Dulhan Jayalath");
+	lcd.setCursor(0, 2);
+	lcd.print("Connecting to RPI3B");
+	lcd.setCursor(0, 3);
+	lcd.print("Please wait ...");
 
-	MCUSR = 0;  // clear out any flags of prior resets.
+	MCUSR = 0;  // Clear out any flags of prior resets
 }
 
 void loop() {
 
+	// While waiting for connection, send ready signal to RPI
 	if (!rpi_ready) {
 		delay(200);
 		Serial.write(90);
@@ -57,20 +64,26 @@ void loop() {
 	if (Serial.available() > 0) {
 
 		int rx, iterations;
+		// Read one byte in normal mode (Single character instruction)
 		if (!solve_mode) {
 			rx = Serial.read();
 		}
+		// Read two bytes in solve mode (Single character instruction + Number of iterations)
 		else {
 			while (Serial.available() < 2);
 			rx = Serial.read();
 			iterations = Serial.read() - 48;
 		}
 
+		// 79 is RPI ready signal
 		if (rx == 79) {
+
+			// Set RPI to ready state
 			if (!rpi_ready) {
 				rpi_ready = true;
 			}
 
+			// Start option selection dialog
 			int selection = 0;
 
 			lcd.clear();
@@ -83,10 +96,16 @@ void loop() {
 			lcd.setCursor(0, 3);
 			lcd.print("Selected: 1");
 			lcd.setCursor(0, 0);
-			lcd.cursor();		
+			lcd.cursor();
 
+			// Change selection on rotation and wait for
+			// push button to be pressed
 			while (!rc.PollSwitch()) {
+
+				// Get rotation
 				int change = rc.PollRotate();
+
+				// Only refresh display if a change is made
 				if (change != 0) {
 					selection -= change;
 					if (selection < 0) {
@@ -103,26 +122,20 @@ void loop() {
 
 			lcd.cursor();
 
+			// Act on selection
 			switch (selection) {
 				case 0:
 					lcd.clear();
 					lcd.setCursor(0, 1);
 					lcd.print("Solving cube...");
-					// lcd.setCursor(0, 2);
-					// lcd.print("Press to cancel.");
 					Serial.write(95);
 					break;
 				case 1:
 					lcd.clear();
 					lcd.setCursor(0, 1);
 					lcd.print("Scrambling cube...");
-					// lcd.setCursor(0, 2);
-					// lcd.print("Press to cancel.");
-					//CR.Scramble();
 					solve_mode = true;
 					Serial.write(99);
-					//Serial.flush();
-					//reset_device();
 					break;
 				case 2:
 					Serial.write(98);
@@ -134,17 +147,18 @@ void loop() {
 					break;
 			}
 		} else if (rx == 'Z') {
+			// Z signal always indicates something has completed and it is
+			// now time to reset the arduino
 			reset_device();
 		}
 
 		switch(rx) {
+			// 80 is signal for showing a new face
 			case 80:
 
-				if (!rpi_ready) {
-					rpi_ready = true;
-				}
-
+				// Show the next face
 				CR.ShowNext(face);
+				// Increment face for next time
 				face += 1;
 
 				// Tell RPI that face operation has finished (92 if totally finished, 91 if only side finished)
@@ -156,6 +170,8 @@ void loop() {
 				}
 
 				break;
+			// General rotations
+			// 93 message indicates the operation has finished
 			case 'R':
 				CR.R(iterations);
 				Serial.write(93);
@@ -210,6 +226,7 @@ void loop() {
 				break;
 		}
 
+		// Wait for all write operations to complete
 		Serial.flush();
 	}
 }

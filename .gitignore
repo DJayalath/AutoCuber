@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+.vscode/
+
 # VS IDE
 *.sln
 *.vcxproj
@@ -13,7 +15,7 @@
 *.json
 
 # VM
-__vm
+__vm/
 
 # FreeCAD
 *.FCStd1

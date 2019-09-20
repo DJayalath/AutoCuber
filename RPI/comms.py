@@ -170,18 +170,25 @@ try:
                     #print("Formatting solution into simple instructions...")
                     moves = format_instruction_list(solution)
                     print("\nYour order is ready.\n")
-                    # Send first move
-                    print("Sending move: {0}".format(moves[0]))
-                    ser.write(moves.pop(0))
-                elif ord(rx) == 93: # Finished a move
-                    # Send next move
-                    print("Sending move: {0}".format(moves[0]))
-                    ser.write(moves.pop(0))
                     # Check if moves list is now empty
                     if not moves:
                         arduino_ready = False
                         print("Sending reset signal!")
                         ser.write('Z1'.encode())
+                    else:
+                        # Send first move
+                        print("Sending move: {0}".format(moves[0]))
+                        ser.write(moves.pop(0))
+                elif ord(rx) == 93: # Finished a move
+                    # Check if moves list is now empty 
+                    if not moves:
+                        arduino_ready = False
+                        print("Sending reset signal!")
+                        ser.write('Z1'.encode())
+                    else:
+                        # Send next move
+                        print("Sending move: {0}".format(moves[0]))
+                        ser.write(moves.pop(0))
                 elif ord(rx) == 97:
                     print("Finished!")
                     arduino_ready = False
