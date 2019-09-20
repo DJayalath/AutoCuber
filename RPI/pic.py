@@ -92,7 +92,7 @@ def analyse():
         if h < 0:
             h += 360
         hsl.append((h, s, l))
-        if s < 0.3:
+        if s < 0.45:
             actual.append("w")
         else:
             actual.append("unknown")
