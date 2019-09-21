@@ -6,8 +6,7 @@ Stage 1: Scan all 6 faces of the cube to retrieve cube state
 
 Stage 2: Calculate solution and solve
 
-https://www.youtube.com/watch?v=FX_zLw3P7Gw
-
+https://www.youtube.com/watch?v=FX_zLw3P7Gw (Video recorded prior to optimization updates - current version wastes no rail movements)
 
 ### Organisation
 - `Designs` contains 3D models created for this project (as well as the custom PCB design)
